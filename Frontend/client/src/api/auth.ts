@@ -1,0 +1,2 @@
+import api from './client'
+export const loginApi = (email: string, password: string) => api.post('/auth/login', { email, password }).then(r => r.data.data)

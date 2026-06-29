@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String        @id @default(cuid())
+  name       String
+  email      String        @unique
+  phone      String?       @unique
+  password   String
+  role       UserRole      @default(STAFF)
+  isActive   Boolean       @default(true)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  activities ActivityLog[]
+  payments   Payment[]
+  shops      Shop[]
+}
+
+model Shop {
+  id             String   @id @default(cuid())
+  shopName       String   @default("")
+  ownerName      String   @default("")
+  phone          String
+  whatsapp       String?
+  email          String?
+  gstNumber      String?
+  address        String   @default("")
+  city           String?
+  state          String?
+  pincode        String?
+  openingBalance Float    @default(0)
+  creditLimit    Float    @default(0)
+  paymentTerm    Int      @default(30)
+  isActive       Boolean  @default(true)
+  notes          String?
+  createdById    String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  bills          Bill[]
+  createdBy      User     @relation(fields: [createdById], references: [id])
+
+  @@index([shopName])
+  @@index([phone])
+}
+
+model Bill {
+  id            String     @id @default(cuid())
+  shopId        String
+  billNumber    String     @unique
+  invoiceNumber String?
+  amount        Decimal    @db.Decimal(12, 2)
+  paidAmount    Decimal    @default(0) @db.Decimal(12, 2)
+  pendingAmount Decimal    @db.Decimal(12, 2)
+  billDate      DateTime
+  dueDate       DateTime
+  reminderDate  DateTime?
+  status        BillStatus @default(PENDING)
+  attachment    String?
+  remarks       String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  shop          Shop       @relation(fields: [shopId], references: [id])
+  payments      Payment[]
+  reminders     Reminder[]
+
+  @@index([dueDate])
+  @@index([status])
+}
+
+model Payment {
+  id            String      @id @default(cuid())
+  billId        String
+  amount        Decimal     @db.Decimal(12, 2)
+  mode          PaymentMode
+  transactionId String?
+  note          String?
+  receivedById  String
+  receivedAt    DateTime    @default(now())
+  bill          Bill        @relation(fields: [billId], references: [id])
+  receivedBy    User        @relation(fields: [receivedById], references: [id])
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  entity    String
+  entityId  String
+  ipAddress String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Reminder {
+  id           String    @id @default(cuid())
+  billId       String
+  reminderDate DateTime
+  isSent       Boolean   @default(false)
+  type         String    @default("IN_APP")
+  message      String?
+  sentAt       DateTime?
+  createdAt    DateTime  @default(now())
+  bill         Bill      @relation(fields: [billId], references: [id], onDelete: Cascade)
+
+  @@index([reminderDate])
+  @@index([isSent])
+}
+
+model Document {
+  id           String   @id @default(cuid())
+  fileName     String
+  originalName String
+  path         String
+  uploadedAt   DateTime @default(now())
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  STAFF
+}
+
+enum BillStatus {
+  PENDING
+  PARTIAL
+  PAID
+  OVERDUE
+}
+
+enum PaymentMode {
+  CASH
+  UPI
+  BANK
+  CHEQUE
+}

@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+  body { background: #F0F2F8; @apply text-gray-800 font-sans antialiased; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #e8eaf2; }
+  ::-webkit-scrollbar-thumb { background: #c5c9e0; border-radius: 999px; }
+}
+
+@layer components {
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed;
+    background: #ffffff;
+    border: 1px solid #e2e5f0;
+    color: #374151;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  .btn:hover { background: #f5f6fb; }
+  .btn-primary { background: #4f46e5; border-color: #4f46e5; @apply text-white; box-shadow: 0 2px 8px rgba(79,70,229,0.25); }
+  .btn-primary:hover { background: #4338ca; border-color: #4338ca; }
+  .btn-success { background: #059669; border-color: #059669; @apply text-white; box-shadow: 0 2px 8px rgba(5,150,105,0.2); }
+  .btn-success:hover { background: #047857; }
+  .btn-danger  { background: #dc2626; border-color: #dc2626; @apply text-white; box-shadow: 0 2px 8px rgba(220,38,38,0.2); }
+  .btn-danger:hover  { background: #b91c1c; }
+  .btn-sm { @apply px-2 py-1 text-xs; }
+  .btn-lg { @apply px-5 py-2.5 text-base; }
+
+  /* Card */
+  .card {
+    background: #ffffff;
+    border: 1px solid #e8eaf2;
+    @apply rounded-xl;
+    box-shadow: 0 1px 4px rgba(15,21,53,0.06);
+  }
+
+  /* Input */
+  .input {
+    @apply w-full rounded-lg px-3 py-2 text-sm outline-none transition-all;
+    background: #ffffff;
+    border: 1px solid #dde0ee;
+    color: #1f2937;
+  }
+  .input::placeholder { color: #9ca3af; }
+  .input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+
+  /* Label */
+  .label { @apply block text-xs font-medium mb-1.5; color: #4b5563; }
+
+  /* Status pills */
+  .pill { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold; }
+  .pill-overdue { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+  .pill-pending { background: #ede9fe; color: #5b21b6; border: 1px solid #c4b5fd; }
+  .pill-partial  { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+  .pill-paid    { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+
+  /* Sidebar nav — these are overridden inline in Sidebar.tsx */
+  .nav-item { @apply flex items-center gap-3 px-3 py-2.5 text-sm rounded-xl mx-0 transition-all; color: #9ca3af; }
+  .nav-item:hover { background: rgba(255,255,255,0.05); color: #e5e7eb; }
+  .nav-item.active { background: linear-gradient(135deg, #1e2b6e, #1a2560); color: #a5b4fc; @apply font-semibold; }
+
+  /* Table */
+  .th { @apply text-xs font-semibold uppercase tracking-wider px-4 py-3 text-left; color: #6b7280; background: #f7f8fc; }
+  .td { @apply px-4 py-3 text-sm; border-bottom: 1px solid #f0f1f8; }
+
+  /* Modal */
+  .modal-overlay { @apply fixed inset-0 z-50 flex items-center justify-center p-4; background: rgba(15,21,53,0.5); backdrop-filter: blur(4px); }
+  .modal { background: #ffffff; border: 1px solid #e8eaf2; @apply rounded-2xl w-full; box-shadow: 0 20px 60px rgba(15,21,53,0.15); }
+
+  /* WhatsApp button */
+  .wa-btn { @apply inline-flex items-center gap-1.5 px-2.5 py-1 text-white text-xs font-medium rounded-lg transition-all cursor-pointer; background: #16a34a; }
+  .wa-btn:hover { background: #15803d; }
+
+  /* Stat card */
+  .stat-card { @apply card p-5 space-y-1; }
+}
