@@ -55,7 +55,7 @@ app.use("/api/scan-bill", scanRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/reminders", reminderRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-app.use("/categories", categoryRoutes);
+app.use("/api/categories", categoryRoutes);
 app.use("/api/users", userRoutes);
 
 app.get("/", (_req, res) => res.json({ success: true, message: "BillTracker API 🚀" }));
