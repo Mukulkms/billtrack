@@ -1,4 +1,4 @@
-import { Loader2, Trash2, ChevronDown, ChevronUp, FileText, Eye } from 'lucide-react'
+import { Loader2, Trash2, ChevronDown, ChevronUp, FileText, Eye, Pencil } from 'lucide-react'
 import { Bill } from '../../types'
 import { fmtAmount, fmtDate, daysLeft } from '../../utils/helpers'
 import StatusPill from '../ui/StatusPill'
@@ -13,11 +13,12 @@ interface Props {
   onPay: (bill: Bill) => void
   onDelete: (id: string) => void
   onView: (bill: Bill) => void   // ← new
+  onEdit: (bill: Bill) => void   // ← new
 }
 
 export default function BillsTable({
   bills, loading, expandedPayments,
-  onTogglePayments, onPay, onDelete, onView
+  onTogglePayments, onPay, onDelete, onView, onEdit
 }: Props) {
 
   if (loading) return (
@@ -120,6 +121,17 @@ export default function BillsTable({
                           onMouseLeave={e => { e.currentTarget.style.background = '' }}
                           onClick={() => onView(b)}>
                           <Eye size={12} />
+                        </button>
+
+                        {/* Edit button — always visible */}
+                        <button
+                          className="btn btn-sm"
+                          title="Edit bill"
+                          style={{ color: '#6366f1', borderColor: '#e0e0ff' }}
+                          onMouseEnter={e => { e.currentTarget.style.background = '#eef2ff' }}
+                          onMouseLeave={e => { e.currentTarget.style.background = '' }}
+                          onClick={() => onEdit(b)}>
+                          <Pencil size={12} />
                         </button>
 
                         {b.status !== 'PAID' && (

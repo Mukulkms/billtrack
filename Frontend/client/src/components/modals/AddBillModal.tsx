@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { Loader2, Upload, Camera, Sparkles, AlertCircle, X, Plus } from 'lucide-react'
-import { Shop } from '../../types'
+import { Shop, Bill } from '../../types'
 import { getCategoriesApi, createCategoryApi } from '../../api/categories'
 import { Category } from '../../types'
 import { todayISO, addDays } from '../../utils/helpers'
-import { createBillApi } from '../../api/bills'
+import { createBillApi, updateBillApi } from '../../api/bills'
 import { getShopsApi, createShopApi } from '../../api/shops'
 import api from '../../api/client'
 import toast from 'react-hot-toast'
@@ -21,10 +21,21 @@ function fileToBase64(file: File): Promise<string> {
 interface Props {
   shops?: Shop[]
   onClose: () => void
+  bill?: Bill | null   // ← when provided, modal runs in edit mode
 }
-export default function AddBillModal({ shops: shopsProp, onClose }: Props) {
+export default function AddBillModal({ shops: shopsProp, onClose, bill }: Props) {
+  const isEdit = !!bill
   const [shops, setShops] = useState<Shop[]>(shopsProp || [])
-  const [form, setForm] = useState({
+  const [form, setForm] = useState(() => bill ? {
+    shopId: bill.shopId,
+    invoiceNumber: bill.invoiceNumber || '',
+    amount: String(bill.amount),
+    billDate: bill.billDate.split('T')[0],
+    period: 'custom',
+    customDue: bill.dueDate.split('T')[0],
+    remarks: bill.remarks || '',
+    categoryId: (bill as any).categoryId || ''
+  } : {
     shopId: '', invoiceNumber: '', amount: '',
     billDate: todayISO(), period: '30', customDue: '', remarks: '', categoryId: ''
   })
@@ -132,7 +143,7 @@ const submit = async () => {
 
   setSaving(true)
   try {
-    await createBillApi({
+    const payload = {
       shopId: form.shopId,
       invoiceNumber: form.invoiceNumber || undefined,
       amount: parseFloat(form.amount),
@@ -140,8 +151,15 @@ const submit = async () => {
       dueDate: getDue(),
       remarks: form.remarks || undefined,
       categoryId: form.categoryId || undefined
-    })
-    toast.success('Bill added ✓')
+    }
+
+    if (isEdit && bill) {
+      await updateBillApi(bill.id, payload)
+      toast.success('Bill updated ✓')
+    } else {
+      await createBillApi(payload)
+      toast.success('Bill added ✓')
+    }
     onClose()
   } catch (e: any) {
     toast.error(e.response?.data?.errors?.[0]?.msg || 'Failed to save bill')
@@ -172,13 +190,14 @@ const handleCreateCategory = async () => {
       <div className="modal max-w-md max-h-[90vh] overflow-y-auto">
 
         <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid #f0f1f8' }}>
-          <h3 className="font-semibold text-sm" style={{ color: '#0f1535' }}>Add bill</h3>
+          <h3 className="font-semibold text-sm" style={{ color: '#0f1535' }}>{isEdit ? 'Edit bill' : 'Add bill'}</h3>
           <button className="btn btn-sm" onClick={onClose}><X size={14} /></button>
         </div>
 
         <div className="p-5 space-y-4">
 
-          {/* AI Scan */}
+          {/* AI Scan — only for new bills */}
+          {!isEdit && (
           <div className="rounded-xl p-4 space-y-3" style={{ background: '#fafbff', border: '1px solid #e8eaf2' }}>
             <p className="text-xs font-semibold" style={{ color: '#374151' }}>
               📸 Scan bill — AI will extract data automatically
@@ -229,13 +248,16 @@ const handleCreateCategory = async () => {
               </div>
             )}
           </div>
+          )}
 
           {/* Divider */}
+          {!isEdit && (
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px" style={{ background: '#f0f1f8' }} />
             <span className="text-xs" style={{ color: '#9ca3af' }}>or fill manually</span>
             <div className="flex-1 h-px" style={{ background: '#f0f1f8' }} />
           </div>
+          )}
 
           {/* Shop select + New shop inline */}
           <div>
@@ -380,7 +402,7 @@ const handleCreateCategory = async () => {
         <div className="flex justify-end gap-2 px-5 py-4" style={{ borderTop: '1px solid #f0f1f8' }}>
           <button className="btn" onClick={onClose}>Cancel</button>
           <button className="btn btn-primary" onClick={submit} disabled={saving}>
-            {saving ? <Loader2 size={14} className="animate-spin" /> : 'Save bill'}
+            {saving ? <Loader2 size={14} className="animate-spin" /> : isEdit ? 'Update bill' : 'Save bill'}
           </button>
         </div>
 

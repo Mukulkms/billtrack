@@ -38,6 +38,7 @@ export default function Bills() {
   const [payBill, setPayBill]   = useState<Bill | null>(null)
   const [showAdd, setShowAdd]   = useState(false)
   const [viewBill, setViewBill] = useState<Bill | null>(null)
+  const [editBill, setEditBill] = useState<Bill | null>(null)
   const [expandedPayments, setExpandedPayments] = useState<Record<string, boolean>>({})
 
   const load = () => {
@@ -134,6 +135,7 @@ export default function Bills() {
       {/* Modals */}
       {payBill   && <PayModal bill={payBill} onClose={() => { setPayBill(null); load() }} />}
       {showAdd   && <AddBillModal shops={shops} onClose={() => { setShowAdd(false); load() }} />}
+      {editBill  && <AddBillModal shops={shops} bill={editBill} onClose={() => { setEditBill(null); load() }} />}
       {viewBill  && <BillDetailModal bill={viewBill} onClose={() => setViewBill(null)} />}
 
       {/* Header */}
@@ -198,6 +200,7 @@ export default function Bills() {
         onPay={setPayBill}
         onDelete={handleDelete}
         onView={setViewBill}
+        onEdit={setEditBill}
       />
 
       {/* 🔥 PAGINATION UI */}
