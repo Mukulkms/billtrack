@@ -302,6 +302,25 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {stats.categoryTotals?.length > 0 && (
+  <div>
+    <h2 className="text-sm font-semibold mb-3" style={{ color: '#0f1535' }}>
+      Category-wise spend
+    </h2>
+    <div className="card divide-y" style={{ borderColor: '#f0f1f8' }}>
+      {stats.categoryTotals.map(c => (
+        <div key={c.categoryId} className="p-3 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium" style={{ color: '#1f2937' }}>{c.categoryName}</p>
+            <p className="text-xs" style={{ color: '#9ca3af' }}>{c.billCount} bill{c.billCount !== 1 ? 's' : ''}</p>
+          </div>
+          <p className="text-sm font-bold" style={{ color: '#6366f1' }}>{fmtAmount(c.totalAmount)}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
       {/* Weekly due — 1 col mobile, 2 col desktop */}
       {stats.weeklyDue.length > 0 && (
         <div>
