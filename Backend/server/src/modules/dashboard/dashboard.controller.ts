@@ -16,10 +16,17 @@ export const getDashboardStats = async (req: Request, res: Response) => {
     totalOutstanding,
     totalCollected,
     recentBills,
+    categoryGroups,
   ] = await Promise.all([
     prisma.shop.count({ where: { isActive: true } }),
     prisma.bill.count(),
-
+    
+    prisma.bill.groupBy({
+    by: ["categoryId"],
+    where: { categoryId: { not: null } },
+    _sum: { amount: true, pendingAmount: true },
+    _count: { _all: true },
+  }),
     // ✅ Fix: status se nahi, date se overdue check karo
     prisma.bill.count({
       where: {
@@ -53,6 +60,21 @@ export const getDashboardStats = async (req: Request, res: Response) => {
     }),
   ]);
 
+const categoryIds = categoryGroups.map(g => g.categoryId).filter(Boolean) as string[];
+const categories = await prisma.category.findMany({ where: { id: { in: categoryIds } } });
+const categoryMap = new Map(categories.map(c => [c.id, c.name]));
+
+const categoryTotals = categoryGroups
+  .map(g => ({
+    categoryId: g.categoryId,
+    categoryName: categoryMap.get(g.categoryId as string) || "Unknown",
+    totalAmount: Number(g._sum.amount) || 0,
+    pendingAmount: Number(g._sum.pendingAmount) || 0,
+    billCount: g._count._all,
+  }))
+  .sort((a, b) => b.totalAmount - a.totalAmount);
+
+
   res.json({
     success: true,
     data: {
@@ -65,6 +87,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
       collectedThisMonth: Number(totalCollected._sum.amount) || 0,
       weeklyDue,
       recentBills,
+      categoryTotals,
     },
   });
 };
