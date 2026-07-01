@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { Loader2, Upload, Camera, Sparkles, AlertCircle, X, Plus } from 'lucide-react'
 import { Shop } from '../../types'
+import { getCategoriesApi, createCategoryApi } from '../../api/categories'
+import { Category } from '../../types'
 import { todayISO, addDays } from '../../utils/helpers'
 import { createBillApi } from '../../api/bills'
 import { getShopsApi, createShopApi } from '../../api/shops'
@@ -28,6 +30,10 @@ export default function AddBillModal({ shops: shopsProp, onClose }: Props) {
     billDate: todayISO(), period: '30', customDue: '', remarks: ''
   })
 
+  const [categories, setCategories] = useState<Category[]>([])
+  const [showNewCategory, setShowNewCategory] = useState(false)
+  const [newCategoryName, setNewCategoryName] = useState('')
+  const [creatingCategory, setCreatingCategory] = useState(false)
   // New shop inline
   const [showNewShop, setShowNewShop] = useState(false)
   const [newShopName, setNewShopName] = useState('')
@@ -46,6 +52,10 @@ export default function AddBillModal({ shops: shopsProp, onClose }: Props) {
       getShopsApi().then(setShops).catch(() => {})
     }
   }, [])
+
+  useEffect(() => {
+  getCategoriesApi().then(setCategories).catch(() => {})
+}, [])
 
   const set = (k: string, v: string) => setForm(p => ({ ...p, [k]: v }))
   const getDue = () => form.period === 'custom' ? form.customDue : addDays(form.billDate, parseInt(form.period))
@@ -139,6 +149,28 @@ export default function AddBillModal({ shops: shopsProp, onClose }: Props) {
       setSaving(false)
     }
   }
+
+  const [form, setForm] = useState({
+  shopId: '', invoiceNumber: '', amount: '',
+  billDate: todayISO(), period: '30', customDue: '', remarks: '', categoryId: ''
+})
+
+const handleCreateCategory = async () => {
+  if (!newCategoryName.trim()) { toast.error('Category name required'); return }
+  setCreatingCategory(true)
+  try {
+    const newCat = await createCategoryApi({ name: newCategoryName.trim() })
+    setCategories(prev => [...prev, newCat])
+    set('categoryId', newCat.id)
+    setShowNewCategory(false)
+    setNewCategoryName('')
+    toast.success('Category created!')
+  } catch (e: any) {
+    toast.error(e?.response?.data?.message || 'Category create failed')
+  } finally {
+    setCreatingCategory(false)
+  }
+}
 
   return (
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
