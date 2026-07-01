@@ -19,7 +19,13 @@ export const getBillsController = async (req: Request, res: Response) => {
 
   // Build where clause
   const where: any = {};
-  if (status) where.status = status;
+  if (status === 'OVERDUE') {
+    // Overdue isn't a stored status — compute it dynamically
+    where.status = { in: ['PENDING', 'PARTIAL'] };
+    where.dueDate = { lt: new Date() };
+  } else if (status) {
+    where.status = status;
+  }
   if (shopId) where.shopId = shopId;
   if (categoryId) where.categoryId = categoryId;
   if (search) {
