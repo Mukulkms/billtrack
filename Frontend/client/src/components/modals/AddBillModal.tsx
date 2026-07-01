@@ -22,7 +22,6 @@ interface Props {
   shops?: Shop[]
   onClose: () => void
 }
-
 export default function AddBillModal({ shops: shopsProp, onClose }: Props) {
   const [shops, setShops] = useState<Shop[]>(shopsProp || [])
   const [form, setForm] = useState({
