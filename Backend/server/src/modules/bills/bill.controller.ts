@@ -11,18 +11,8 @@ export const createBillController = async (req: Request, res: Response) => {
   res.status(201).json({ success: true, message: "Bill created", data: bill });
 };
 export const getBillsController = async (req: Request, res: Response) => {
-  const { search, status, shopId, page = '1', limit = '10' } = req.query;
- 
-  if (categoryId) where.categoryId = categoryId;
+  const { search, status, shopId, categoryId, page = '1', limit = '10' } = req.query;
 
-  const bills = await prisma.bill.findMany({
-  where,
-  skip,
-  take: limitNum,
-  orderBy: { createdAt: 'desc' },
-  include: { shop: true, payments: true, category: true },
-});
-  
   const pageNum = Math.max(1, Number(page));
   const limitNum = Math.min(100, Math.max(1, Number(limit)));
   const skip = (pageNum - 1) * limitNum;
@@ -31,6 +21,7 @@ export const getBillsController = async (req: Request, res: Response) => {
   const where: any = {};
   if (status) where.status = status;
   if (shopId) where.shopId = shopId;
+  if (categoryId) where.categoryId = categoryId;
   if (search) {
     where.OR = [
       { billNumber: { contains: search as string, mode: 'insensitive' } },
@@ -47,7 +38,7 @@ export const getBillsController = async (req: Request, res: Response) => {
     skip,
     take: limitNum,
     orderBy: { createdAt: 'desc' },
-    include: { shop: true, payments: true },
+    include: { shop: true, payments: true, category: true },
   });
 
   res.json({

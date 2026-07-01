@@ -20,13 +20,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
   ] = await Promise.all([
     prisma.shop.count({ where: { isActive: true } }),
     prisma.bill.count(),
-    
-    prisma.bill.groupBy({
-    by: ["categoryId"],
-    where: { categoryId: { not: null } },
-    _sum: { amount: true, pendingAmount: true },
-    _count: { _all: true },
-  }),
+
     // ✅ Fix: status se nahi, date se overdue check karo
     prisma.bill.count({
       where: {
@@ -57,6 +51,12 @@ export const getDashboardStats = async (req: Request, res: Response) => {
       include: { shop: { select: { shopName: true, ownerName: true } } },
       orderBy: { createdAt: "desc" },
       take: 5,
+    }),
+    prisma.bill.groupBy({
+      by: ["categoryId"],
+      where: { categoryId: { not: null } },
+      _sum: { amount: true, pendingAmount: true },
+      _count: { _all: true },
     }),
   ]);
 
