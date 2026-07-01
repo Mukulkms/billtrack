@@ -125,30 +125,30 @@ export default function AddBillModal({ shops: shopsProp, onClose }: Props) {
     }
   }
 
-  const submit = async () => {
-    if (!form.shopId)   { toast.error('Select a shop'); return }
-    if (!form.amount)   { toast.error('Enter amount'); return }
-    if (!form.billDate) { toast.error('Enter bill date'); return }
-    if (form.period === 'custom' && !form.customDue) { toast.error('Set custom due date'); return }
+const submit = async () => {
+  if (!form.shopId)   { toast.error('Select a shop'); return }
+  if (!form.amount)   { toast.error('Enter amount'); return }
+  if (!form.billDate) { toast.error('Enter bill date'); return }
+  if (form.period === 'custom' && !form.customDue) { toast.error('Set custom due date'); return }
 
-    setSaving(true)
-    try {
-      await createBillApi({
-        shopId: form.shopId,
-        invoiceNumber: form.invoiceNumber || undefined,
-        amount: parseFloat(form.amount),
-        billDate: form.billDate,
-        dueDate: getDue(),
-        remarks: form.remarks || undefined
-      })
-      toast.success('Bill added ✓')
-      onClose()
-    } catch (e: any) {
-      toast.error(e.response?.data?.errors?.[0]?.msg || 'Failed to save bill')
-    } finally {
-      setSaving(false)
-    }
+  setSaving(true)
+  try {
+    await createBillApi({
+      shopId: form.shopId,
+      invoiceNumber: form.invoiceNumber || undefined,
+      amount: parseFloat(form.amount),
+      billDate: form.billDate,
+      dueDate: getDue(),
+      remarks: form.remarks || undefined
+    })
+    toast.success('Bill added ✓')
+    onClose()
+  } catch (e: any) {
+    toast.error(e.response?.data?.errors?.[0]?.msg || 'Failed to save bill')
+  } finally {
+    setSaving(false)
   }
+}
 
   const [form, setForm] = useState({
   shopId: '', invoiceNumber: '', amount: '',
