@@ -12,6 +12,16 @@ export const createBillController = async (req: Request, res: Response) => {
 };
 export const getBillsController = async (req: Request, res: Response) => {
   const { search, status, shopId, page = '1', limit = '10' } = req.query;
+ 
+  if (categoryId) where.categoryId = categoryId;
+
+  const bills = await prisma.bill.findMany({
+  where,
+  skip,
+  take: limitNum,
+  orderBy: { createdAt: 'desc' },
+  include: { shop: true, payments: true, category: true },
+});
   
   const pageNum = Math.max(1, Number(page));
   const limitNum = Math.min(100, Math.max(1, Number(limit)));
