@@ -15,9 +15,9 @@ export default function Weekly() {
   const [payBill, setPayBill] = useState<Bill | null>(null)
 
   const load = () =>
-    getBillsApi({ limit: 200 })
-      .then(d => setBills(d.bills || d))
-      .finally(() => setLoading(false))
+  getBillsApi({ limit: 200 })
+    .then(d => setBills(d.data || d.bills || (Array.isArray(d) ? d : [])))
+    .finally(() => setLoading(false))
 
   useEffect(() => { load() }, [])
 
