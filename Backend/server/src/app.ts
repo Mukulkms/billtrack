@@ -12,6 +12,7 @@ import billRoutes from "./modules/bills/bill.routes";
 import scanRoutes from "./modules/bills/scan.routes";
 import paymentRoutes from "./modules/payments/payment.routes";
 import reminderRoutes from "./modules/reminders/reminder.routes";
+import categoryRoutes from "./modules/categories/category.routes";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes";
 import userRoutes from "./modules/users/user.routes";
 
@@ -54,6 +55,7 @@ app.use("/api/scan-bill", scanRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/reminders", reminderRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/categories", categoryRoutes);
 app.use("/api/users", userRoutes);
 
 app.get("/", (_req, res) => res.json({ success: true, message: "BillTracker API 🚀" }));
