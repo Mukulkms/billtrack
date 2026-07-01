@@ -26,7 +26,7 @@ export default function AddBillModal({ shops: shopsProp, onClose }: Props) {
   const [shops, setShops] = useState<Shop[]>(shopsProp || [])
   const [form, setForm] = useState({
     shopId: '', invoiceNumber: '', amount: '',
-    billDate: todayISO(), period: '30', customDue: '', remarks: ''
+    billDate: todayISO(), period: '30', customDue: '', remarks: '', categoryId: ''
   })
 
   const [categories, setCategories] = useState<Category[]>([])
@@ -138,7 +138,8 @@ const submit = async () => {
       amount: parseFloat(form.amount),
       billDate: form.billDate,
       dueDate: getDue(),
-      remarks: form.remarks || undefined
+      remarks: form.remarks || undefined,
+      categoryId: form.categoryId || undefined
     })
     toast.success('Bill added ✓')
     onClose()
@@ -148,11 +149,6 @@ const submit = async () => {
     setSaving(false)
   }
 }
-
-  const [form, setForm] = useState({
-  shopId: '', invoiceNumber: '', amount: '',
-  billDate: todayISO(), period: '30', customDue: '', remarks: '', categoryId: ''
-})
 
 const handleCreateCategory = async () => {
   if (!newCategoryName.trim()) { toast.error('Category name required'); return }
