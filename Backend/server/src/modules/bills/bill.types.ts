@@ -8,6 +8,7 @@ export interface CreateBillDto {
   reminderDate?: string;
   remarks?: string;
   attachment?: string;
+  categoryId?: string;
 }
 
 export interface UpdateBillDto {
@@ -18,4 +19,5 @@ export interface UpdateBillDto {
   reminderDate?: string;
   remarks?: string;
   status?: string;
+  categoryId?: string;
 }
