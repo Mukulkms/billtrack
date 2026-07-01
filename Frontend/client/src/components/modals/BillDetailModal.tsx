@@ -103,7 +103,8 @@ export default function BillDetailModal({ bill, onClose }: Props) {
                     )}
                   </span>
                 } />
-                <InfoRow label="remark" value={bill.category}/>
+                 <InfoRow label="remark" value={bill.remarks}/>
+               {bill.category?.name && <InfoRow label="Category" value={bill.category.name} />}
                 {(bill as any).description && <InfoRow label="Description" value={(bill as any).description} />}
               </div>
             </div>
