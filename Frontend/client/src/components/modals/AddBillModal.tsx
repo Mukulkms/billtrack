@@ -294,7 +294,49 @@ const handleCreateCategory = async () => {
               </div>
             )}
           </div>
+          <div>
+  <label className="label">Category</label>
+  <select className="input" value={form.categoryId}
+    onChange={e => {
+      if (e.target.value === '__new__') {
+        setShowNewCategory(true)
+        setNewCategoryName('')
+        set('categoryId', '')
+      } else {
+        set('categoryId', e.target.value)
+        setShowNewCategory(false)
+      }
+    }}>
+    <option value="">Select category...</option>
+    {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+    <option value="__new__">➕ New category...</option>
+  </select>
 
+  {showNewCategory && (
+    <div className="mt-2 rounded-xl p-3 space-y-2"
+      style={{ background: '#f5f3ff', border: '1px solid #c4b5fd' }}>
+      <p className="text-xs font-semibold" style={{ color: '#5b21b6' }}>Create new category</p>
+      <div className="flex gap-2">
+        <input
+          className="input flex-1"
+          placeholder="e.g. Alo Fruit Juice"
+          value={newCategoryName}
+          autoFocus
+          onChange={e => setNewCategoryName(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && handleCreateCategory()}
+        />
+        <button className="btn btn-primary" style={{ flexShrink: 0 }}
+          onClick={handleCreateCategory} disabled={creatingCategory}>
+          {creatingCategory ? <Loader2 size={13} className="animate-spin" /> : <Plus size={13} />}
+        </button>
+        <button className="btn" style={{ flexShrink: 0, color: '#6b7280' }}
+          onClick={() => { setShowNewCategory(false); setNewCategoryName('') }}>
+          <X size={13} />
+        </button>
+      </div>
+    </div>
+  )}
+</div>
           <div>
             <label className="label">Invoice number</label>
             <input className="input" placeholder="INV-001" value={form.invoiceNumber}
