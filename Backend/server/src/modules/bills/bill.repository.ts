@@ -16,8 +16,9 @@ export const createBillRepo = (data: CreateBillDto & { billNumber: string; pendi
       reminderDate: data.reminderDate ? new Date(data.reminderDate) : null,
       remarks: data.remarks,
       attachment: data.attachment,
+      categoryId: data.categoryId || null,
     },
-    include: { shop: true, payments: true },
+    include: { shop: true, payments: true, category: true },
   });
 };
 
@@ -118,22 +119,4 @@ export const markOverdueRepo = () => {
     data: { status: "OVERDUE" },
   });
 };
-export const createBillRepo = (data: CreateBillDto & { billNumber: string; pendingAmount: number }) => {
-  return prisma.bill.create({
-    data: {
-      shopId: data.shopId,
-      billNumber: data.billNumber,
-      invoiceNumber: data.invoiceNumber,
-      amount: data.amount,
-      paidAmount: 0,
-      pendingAmount: data.amount,
-      billDate: new Date(data.billDate),
-      dueDate: new Date(data.dueDate),
-      reminderDate: data.reminderDate ? new Date(data.reminderDate) : null,
-      remarks: data.remarks,
-      attachment: data.attachment,
-      categoryId: data.categoryId || null,
-    },
-    include: { shop: true, payments: true, category: true },
-  });
-};
+
