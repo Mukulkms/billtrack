@@ -14,6 +14,7 @@ export interface DashboardStats {
   paidCount: number;
   totalOutstanding: number;
   totalCollected: number; 
+  totalCollected: number;
   collectedThisMonth: number;
   weeklyDue: Bill[];
   recentBills: Bill[];
