@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import {
   AlertTriangle,
   TrendingDown,
+  TrendingUp,
   Clock,
   CheckCircle,
   Store,
@@ -52,14 +53,14 @@ export default function Dashboard() {
       iconColor: "#7c3aed",
       valueColor: "#1f2937",
     },
-    {
-      label: "Overdue",
-      value: stats.overdueCount,
-      sub: "Need attention",
-      icon: <AlertTriangle size={18} />,
-      iconBg: "#fee2e2",
-      iconColor: "#dc2626",
-      valueColor: "#dc2626",
+   {
+      label: "Total collection",
+      value: fmtAmount(stats.totalCollected),
+      sub: `${stats.paidCount} bills paid`,
+      icon: <TrendingUp size={18} />,
+      iconBg: "#d1fae5",
+      iconColor: "#059669",
+      valueColor: "#059669",
     },
     {
       label: "Due this week",
