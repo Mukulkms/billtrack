@@ -13,6 +13,7 @@ export interface DashboardStats {
   pendingCount: number;
   paidCount: number;
   totalOutstanding: number;
+  totalCollected: number; 
   collectedThisMonth: number;
   weeklyDue: Bill[];
   recentBills: Bill[];
