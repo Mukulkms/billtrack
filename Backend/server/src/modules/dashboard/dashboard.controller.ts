@@ -15,6 +15,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
     weeklyDue,
     totalOutstanding,
     totalCollected,
+    totalCollectedAgg,   
     recentBills,
     categoryGroups,
   ] = await Promise.all([
@@ -45,6 +46,9 @@ export const getDashboardStats = async (req: Request, res: Response) => {
     }),
     prisma.payment.aggregate({
       where: { receivedAt: { gte: monthStart } },
+      _sum: { amount: true },
+    }),
+    prisma.payment.aggregate({        
       _sum: { amount: true },
     }),
     prisma.bill.findMany({
@@ -84,6 +88,7 @@ const categoryTotals = categoryGroups
       pendingCount,
       paidCount,
       totalOutstanding: Number(totalOutstanding._sum.pendingAmount) || 0,
+      totalCollected: Number(totalCollectedAgg._sum.amount) || 0,
       collectedThisMonth: Number(totalCollected._sum.amount) || 0,
       weeklyDue,
       recentBills,
