@@ -12,9 +12,6 @@ import BillsTable from '../components/modals/BillsTable'
 import BillDetailModal from '../components/modals/BillDetailModal'
 import toast from 'react-hot-toast'
 
-const [categories, setCategories] = useState<Category[]>([])
-const [categoryId, setCategoryId] = useState(searchParams.get('categoryId') || '')
-
 const STATUS_FILTERS = [
   { value: '', label: 'All' },
   { value: 'OVERDUE', label: '🔴 Overdue' },
@@ -34,7 +31,9 @@ export default function Bills() {
   const [status, setStatus]   = useState(searchParams.get('status') || '')
   const [shopId, setShopId]   = useState(searchParams.get('shopId') || '')
   const [loading, setLoading] = useState(true)
-  
+
+  const [categories, setCategories] = useState<Category[]>([])
+  const [categoryId, setCategoryId] = useState(searchParams.get('categoryId') || '')
   // 🔥 Pagination State
   const [page, setPage]       = useState(Number(searchParams.get('page')) || 1)
   const [totalPages, setTotalPages] = useState(1)
