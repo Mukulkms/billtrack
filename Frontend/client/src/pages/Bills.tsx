@@ -3,12 +3,17 @@ import { useSearchParams } from 'react-router-dom'
 import { Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import { getBillsApi, deleteBillApi } from '../api/bills'
 import { getShopsApi } from '../api/shops'
+import { getCategoriesApi } from '../api/categories'
+import { Category } from '../types'
 import { Bill, Shop } from '../types'
 import PayModal from '../components/modals/PayModal'
 import AddBillModal from '../components/modals/AddBillModal'
 import BillsTable from '../components/modals/BillsTable'
 import BillDetailModal from '../components/modals/BillDetailModal'
 import toast from 'react-hot-toast'
+
+const [categories, setCategories] = useState<Category[]>([])
+const [categoryId, setCategoryId] = useState(searchParams.get('categoryId') || '')
 
 const STATUS_FILTERS = [
   { value: '', label: 'All' },
@@ -41,30 +46,33 @@ export default function Bills() {
   const [editBill, setEditBill] = useState<Bill | null>(null)
   const [expandedPayments, setExpandedPayments] = useState<Record<string, boolean>>({})
 
-  const load = () => {
-    setLoading(true)
-    Promise.all([
-      getBillsApi({ 
-        search, 
-        status: status || undefined, 
-        shopId: shopId || undefined, 
-        limit: PAGE_SIZE,
-        page: page  // 🔥 API ko page bhejo
-      }),
-      getShopsApi()
-    ])
-      .then(([b, s]) => { 
-        setBills(b.bills || b.data || b)
-        setTotalPages(b.totalPages || 1)
-        setTotalCount(b.totalCount || b.count || 0)
-        setShops(s) 
-      })
-      .catch(() => toast.error('Failed to load'))
-      .finally(() => setLoading(false))
-  }
+const load = () => {
+  setLoading(true)
+  Promise.all([
+    getBillsApi({ 
+      search, 
+      status: status || undefined, 
+      shopId: shopId || undefined, 
+      categoryId: categoryId || undefined,  
+      limit: PAGE_SIZE,
+      page: page
+    }),
+    getShopsApi(),
+    getCategoriesApi()   
+  ])
+    .then(([b, s, c]) => { 
+      setBills(b.bills || b.data || b)
+      setTotalPages(b.totalPages || 1)
+      setTotalCount(b.totalCount || b.count || 0)
+      setShops(s)
+       setCategories(c)  
+    })
+    .catch(() => toast.error('Failed to load'))
+    .finally(() => setLoading(false))
+}
 
   // 🔥 Page change pe reload + URL update
-  useEffect(() => { load() }, [search, status, shopId, page])
+ useEffect(() => { load() }, [search, status, shopId, categoryId, page])
 
   // Filter change pe page reset karo
   const handleStatusChange = (val: string) => {
@@ -72,7 +80,11 @@ export default function Bills() {
     setPage(1)
     updateUrl({ status: val, page: '1' })
   }
-
+  const handleCategoryChange = (val: string) => {
+    setCategoryId(val)
+    setPage(1)
+    updateUrl({ categoryId: val, page: '1' })
+  }
   const handleShopChange = (val: string) => {
     setShopId(val)
     setPage(1)
@@ -189,6 +201,16 @@ export default function Bills() {
           <option value="">All shops</option>
           {shops.map(s => <option key={s.id} value={s.id}>{s.shopName}</option>)}
         </select>
+
+       <select 
+        className="input" 
+        style={{ width: 160, fontSize: 13 }}
+        value={categoryId} 
+        onChange={e => handleCategoryChange(e.target.value)}
+          >
+        <option value="">All categories</option>
+        {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+      </select>
       </div>
 
       {/* Table */}
