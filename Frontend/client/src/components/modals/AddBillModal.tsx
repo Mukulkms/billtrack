@@ -44,10 +44,16 @@ export default function AddBillModal({ shops: shopsProp, onClose, bill }: Props)
   const [showNewCategory, setShowNewCategory] = useState(false)
   const [newCategoryName, setNewCategoryName] = useState('')
   const [creatingCategory, setCreatingCategory] = useState(false)
+
   // New shop inline
   const [showNewShop, setShowNewShop] = useState(false)
   const [newShopName, setNewShopName] = useState('')
   const [creatingShop, setCreatingShop] = useState(false)
+
+  // Shop autocomplete
+  const [shopQuery, setShopQuery] = useState('')
+  const [showShopDropdown, setShowShopDropdown] = useState(false)
+  const shopBoxRef = useRef<HTMLDivElement>(null)
 
   const [scanning, setScanning] = useState(false)
   const [preview, setPreview] = useState<string | null>(null)
@@ -57,15 +63,37 @@ export default function AddBillModal({ shops: shopsProp, onClose, bill }: Props)
   const fileRef = useRef<HTMLInputElement>(null)
   const camRef = useRef<HTMLInputElement>(null)
 
+  // Always fetch fresh shops list (fixes stale/missing shopsProp bug)
   useEffect(() => {
-    if (!shopsProp || shopsProp.length === 0) {
-      getShopsApi().then(setShops).catch(() => {})
-    }
+    getShopsApi().then(setShops).catch(() => {})
   }, [])
 
   useEffect(() => {
-  getCategoriesApi().then(setCategories).catch(() => {})
-}, [])
+    getCategoriesApi().then(setCategories).catch(() => {})
+  }, [])
+
+  // When shops load (or edit mode has a shopId), prefill the visible input text
+  useEffect(() => {
+    if (form.shopId) {
+      const s = shops.find(s => s.id === form.shopId)
+      if (s) setShopQuery(s.shopName)
+    }
+  }, [shops])
+
+  // Close shop dropdown when clicking outside
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (shopBoxRef.current && !shopBoxRef.current.contains(e.target as Node)) {
+        setShowShopDropdown(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const filteredShops = shops.filter(s =>
+    s.shopName.toLowerCase().includes(shopQuery.toLowerCase())
+  )
 
   const set = (k: string, v: string) => setForm(p => ({ ...p, [k]: v }))
   const getDue = () => form.period === 'custom' ? form.customDue : addDays(form.billDate, parseInt(form.period))
@@ -92,11 +120,13 @@ export default function AddBillModal({ shops: shopsProp, onClose, bill }: Props)
         const match = shops.find(s => s.shopName.toLowerCase().includes(q))
         if (match) {
           set('shopId', match.id)
+          setShopQuery(match.shopName)
           setScanMsg('✓ Data extracted! Review and save.')
         } else {
           // Auto show new shop form with scanned name
           setNewShopName(data.shopName)
           setShowNewShop(true)
+          setShopQuery(data.shopName)
           setScanMsg('✓ Data extracted! Shop not found — create below.')
         }
       } else {
@@ -124,6 +154,7 @@ export default function AddBillModal({ shops: shopsProp, onClose, bill }: Props)
       const newShop = res?.id ? res : (res?.shop || res?.data)
       setShops(prev => [...prev, newShop])
       set('shopId', newShop.id)
+      setShopQuery(newShop.shopName)
       setShowNewShop(false)
       setNewShopName('')
       setScanMsg(`✓ Shop "${newShop.shopName}" created & selected!`)
@@ -259,24 +290,64 @@ const handleCreateCategory = async () => {
           </div>
           )}
 
-          {/* Shop select + New shop inline */}
-          <div>
+          {/* Shop autocomplete + New shop inline */}
+          <div ref={shopBoxRef} className="relative">
             <label className="label">Shop *</label>
-            <select className="input" value={form.shopId}
+            <input
+              className="input"
+              placeholder="Type shop name..."
+              value={shopQuery}
               onChange={e => {
-                if (e.target.value === '__new__') {
-                  setShowNewShop(true)
-                  setNewShopName('')
-                  set('shopId', '')
-                } else {
-                  set('shopId', e.target.value)
-                  setShowNewShop(false)
-                }
-              }}>
-              <option value="">Select shop...</option>
-              {shops.map(s => <option key={s.id} value={s.id}>{s.shopName}</option>)}
-              <option value="__new__">➕ New shop...</option>
-            </select>
+                setShopQuery(e.target.value)
+                set('shopId', '')
+                setShowShopDropdown(true)
+              }}
+              onFocus={() => setShowShopDropdown(true)}
+            />
+
+            {showShopDropdown && (
+              <div className="absolute z-10 w-full mt-1 rounded-xl overflow-hidden"
+                style={{ background: '#fff', border: '1px solid #e8eaf2', boxShadow: '0 4px 16px rgba(0,0,0,0.08)', maxHeight: 200, overflowY: 'auto' }}>
+
+                {filteredShops.map(s => (
+                  <div key={s.id}
+                    className="px-3 py-2 text-sm cursor-pointer"
+                    style={{ color: '#0f1535' }}
+                    onMouseDown={() => {
+                      set('shopId', s.id)
+                      setShopQuery(s.shopName)
+                      setShowShopDropdown(false)
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.background = '#f5f3ff')}
+                    onMouseLeave={e => (e.currentTarget.style.background = '#fff')}
+                  >
+                    {s.shopName}
+                  </div>
+                ))}
+
+                {filteredShops.length === 0 && shopQuery.trim() && (
+                  <div className="px-3 py-2 text-xs" style={{ color: '#9ca3af' }}>
+                    No shop found
+                  </div>
+                )}
+
+                {shopQuery.trim() && !filteredShops.some(
+                  s => s.shopName.toLowerCase() === shopQuery.trim().toLowerCase()
+                ) && (
+                  <div
+                    className="px-3 py-2 text-sm cursor-pointer font-medium flex items-center gap-1.5"
+                    style={{ color: '#6366f1', borderTop: filteredShops.length ? '1px solid #f0f1f8' : 'none' }}
+                    onMouseDown={() => {
+                      setNewShopName(shopQuery.trim())
+                      setShowNewShop(true)
+                      setShowShopDropdown(false)
+                    }}
+                  >
+                    <Plus size={13} /> Create "{shopQuery.trim()}"
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Inline new shop creator */}
             {showNewShop && (
@@ -311,49 +382,51 @@ const handleCreateCategory = async () => {
               </div>
             )}
           </div>
-          <div>
-  <label className="label">Category</label>
-  <select className="input" value={form.categoryId}
-    onChange={e => {
-      if (e.target.value === '__new__') {
-        setShowNewCategory(true)
-        setNewCategoryName('')
-        set('categoryId', '')
-      } else {
-        set('categoryId', e.target.value)
-        setShowNewCategory(false)
-      }
-    }}>
-    <option value="">Select category...</option>
-    {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-    <option value="__new__">➕ New category...</option>
-  </select>
 
-  {showNewCategory && (
-    <div className="mt-2 rounded-xl p-3 space-y-2"
-      style={{ background: '#f5f3ff', border: '1px solid #c4b5fd' }}>
-      <p className="text-xs font-semibold" style={{ color: '#5b21b6' }}>Create new category</p>
-      <div className="flex gap-2">
-        <input
-          className="input flex-1"
-          placeholder="e.g. Alo Fruit Juice"
-          value={newCategoryName}
-          autoFocus
-          onChange={e => setNewCategoryName(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && handleCreateCategory()}
-        />
-        <button className="btn btn-primary" style={{ flexShrink: 0 }}
-          onClick={handleCreateCategory} disabled={creatingCategory}>
-          {creatingCategory ? <Loader2 size={13} className="animate-spin" /> : <Plus size={13} />}
-        </button>
-        <button className="btn" style={{ flexShrink: 0, color: '#6b7280' }}
-          onClick={() => { setShowNewCategory(false); setNewCategoryName('') }}>
-          <X size={13} />
-        </button>
-      </div>
-    </div>
-  )}
-</div>
+          <div>
+            <label className="label">Category</label>
+            <select className="input" value={form.categoryId}
+              onChange={e => {
+                if (e.target.value === '__new__') {
+                  setShowNewCategory(true)
+                  setNewCategoryName('')
+                  set('categoryId', '')
+                } else {
+                  set('categoryId', e.target.value)
+                  setShowNewCategory(false)
+                }
+              }}>
+              <option value="">Select category...</option>
+              {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              <option value="__new__">➕ New category...</option>
+            </select>
+
+            {showNewCategory && (
+              <div className="mt-2 rounded-xl p-3 space-y-2"
+                style={{ background: '#f5f3ff', border: '1px solid #c4b5fd' }}>
+                <p className="text-xs font-semibold" style={{ color: '#5b21b6' }}>Create new category</p>
+                <div className="flex gap-2">
+                  <input
+                    className="input flex-1"
+                    placeholder="e.g. Alo Fruit Juice"
+                    value={newCategoryName}
+                    autoFocus
+                    onChange={e => setNewCategoryName(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && handleCreateCategory()}
+                  />
+                  <button className="btn btn-primary" style={{ flexShrink: 0 }}
+                    onClick={handleCreateCategory} disabled={creatingCategory}>
+                    {creatingCategory ? <Loader2 size={13} className="animate-spin" /> : <Plus size={13} />}
+                  </button>
+                  <button className="btn" style={{ flexShrink: 0, color: '#6b7280' }}
+                    onClick={() => { setShowNewCategory(false); setNewCategoryName('') }}>
+                    <X size={13} />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           <div>
             <label className="label">Invoice number</label>
             <input className="input" placeholder="INV-001" value={form.invoiceNumber}
