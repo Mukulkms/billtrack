@@ -64,8 +64,9 @@ export default function AddBillModal({ shops: shopsProp, onClose, bill }: Props)
   const camRef = useRef<HTMLInputElement>(null)
 
   // Always fetch fresh shops list (fixes stale/missing shopsProp bug)
+  // limit high rakha hai taaki pagination ki wajah se koi shop miss na ho
   useEffect(() => {
-    getShopsApi().then(setShops).catch(() => {})
+    getShopsApi(1, 1000).then(setShops).catch(() => {})
   }, [])
 
   useEffect(() => {
