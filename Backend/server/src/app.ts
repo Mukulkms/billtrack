@@ -15,6 +15,7 @@ import reminderRoutes from "./modules/reminders/reminder.routes";
 import categoryRoutes from "./modules/categories/category.routes";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes";
 import userRoutes from "./modules/users/user.routes";
+import insightRoutes from "./modules/insights/insight.routes";
 
 const app = express();
 
@@ -57,6 +58,7 @@ app.use("/api/reminders", reminderRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/insights", insightRoutes);
 
 app.get("/", (_req, res) => res.json({ success: true, message: "BillTracker API 🚀" }));
 
