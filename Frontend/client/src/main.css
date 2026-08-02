@@ -76,4 +76,30 @@
 
   /* Stat card */
   .stat-card { @apply card p-5 space-y-1; }
+
+  /* Eyebrow label — small uppercase section marker */
+  .eyebrow { @apply text-[11px] font-semibold uppercase tracking-wider; color: #9ca3af; letter-spacing: 0.06em; }
+
+  /* Skeleton loading shimmer — used while dashboard data is in flight */
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background: #eef0f7;
+    border-radius: 10px;
+  }
+  .skeleton::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+    animation: shimmer 1.4s infinite;
+  }
+  @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+
+  /* Health bar — collected vs outstanding, the dashboard's signature visual */
+  .health-track { display: flex; width: 100%; height: 10px; border-radius: 999px; overflow: hidden; background: #eef0f7; }
+  .health-fill { height: 100%; transition: width 0.5s ease; }
+
+  /* Category spend — proportional horizontal bars */
+  .cat-bar-track { width: 100%; height: 6px; border-radius: 999px; background: #f0f1f8; overflow: hidden; }
+  .cat-bar-fill { height: 100%; border-radius: 999px; transition: width 0.5s ease; }
 }

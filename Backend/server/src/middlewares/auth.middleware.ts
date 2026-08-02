@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { isSessionActive, removeSession } from "../utils/activeSessions.store";
+import { isSessionActive, removeSession, touchSession } from "../utils/activeSessions.store";
 
 interface JwtPayload {
   id: string;
@@ -35,6 +35,9 @@ export const authenticate = (
       token,
       process.env.JWT_SECRET!
     ) as JwtPayload;
+
+    // Activity confirmed — reset the 1hr idle clock
+    touchSession(token);
 
     req.user = {
       id: decoded.id,
