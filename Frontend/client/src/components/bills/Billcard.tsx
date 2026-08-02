@@ -57,9 +57,9 @@ export default function BillCard({ bill: b, expanded, onTogglePayments, onPay, o
         )}
       </div>
 
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
         {b.status !== 'PAID' && (
-          <button className="btn btn-sm btn-success flex-1" onClick={() => onPay(b)}>Pay</button>
+          <button className="btn btn-sm btn-success justify-between" onClick={() => onPay(b)}>Pay</button>
         )}
 
         {b.shop?.whatsapp && b.status !== 'PAID' && (
