@@ -22,7 +22,7 @@ export default function Login() {
   return (
     <div
       className="min-h-screen flex items-center justify-center p-4"
-      style={{ background: '#0f1535' }}
+      style={{ background: '#17140F' }}
     >
       <div
         aria-hidden
@@ -38,7 +38,7 @@ export default function Login() {
           <div
             className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
             style={{
-              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+              background: 'linear-gradient(135deg, #17140F 0%, #3A362E 100%)',
               boxShadow: '0 8px 32px rgba(99,102,241,0.35)',
             }}
           >
@@ -50,7 +50,7 @@ export default function Login() {
           >
             BillTracker Pro
           </h1>
-          <p className="text-sm mt-1.5" style={{ color: '#6b7280' }}>
+          <p className="text-sm mt-1.5" style={{ color: '#7A7566' }}>
             Sign in to your account
           </p>
         </div>
@@ -59,21 +59,21 @@ export default function Login() {
           className="rounded-2xl p-6"
           style={{
             background: '#ffffff',
-            border: '1px solid #e8eaf2',
+            border: '1px solid #E7E1D3',
             boxShadow: '0 24px 64px rgba(0,0,0,0.25)',
           }}
         >
           <form onSubmit={submit} className="space-y-4">
 
             <div>
-              <label className="label" style={{ color: '#374151' }}>Email address</label>
+              <label className="label" style={{ color: '#3A362E' }}>Email address</label>
               <div className="relative">
                 <Mail
                   size={15}
                   style={{
                     position: 'absolute', left: 12,
                     top: '50%', transform: 'translateY(-50%)',
-                    color: '#9ca3af', pointerEvents: 'none',
+                    color: '#A39D8A', pointerEvents: 'none',
                   }}
                 />
                 <input
@@ -88,14 +88,14 @@ export default function Login() {
             </div>
 
             <div>
-              <label className="label" style={{ color: '#374151' }}>Password</label>
+              <label className="label" style={{ color: '#3A362E' }}>Password</label>
               <div className="relative">
                 <Lock
                   size={15}
                   style={{
                     position: 'absolute', left: 12,
                     top: '50%', transform: 'translateY(-50%)',
-                    color: '#9ca3af', pointerEvents: 'none',
+                    color: '#A39D8A', pointerEvents: 'none',
                   }}
                 />
                 <input
@@ -116,8 +116,8 @@ export default function Login() {
               disabled={loading}
               style={{
                 background: loading
-                  ? '#4f46e5'
-                  : 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                  ? '#17140F'
+                  : 'linear-gradient(135deg, #17140F 0%, #17140F 100%)',
                 border: 'none',
                 color: '#fff',
                 boxShadow: '0 4px 16px rgba(99,102,241,0.35)',

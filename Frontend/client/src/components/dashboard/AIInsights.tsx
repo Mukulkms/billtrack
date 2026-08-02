@@ -5,9 +5,9 @@ import { fmtAmount } from '../../utils/helpers'
 import ShopAvatar from '../ui/ShopAvatar'
 
 function ShopRow({ g, kind }: { g: ShopInsightGroup; kind: 'overdue' | 'upcoming' }) {
-  const accent = kind === 'overdue' ? '#dc2626' : '#d97706'
-  const bg = kind === 'overdue' ? '#fff1f2' : '#fffbeb'
-  const border = kind === 'overdue' ? '#fecdd3' : '#fde68a'
+  const accent = kind === 'overdue' ? '#B4432E' : '#C2790C'
+  const bg = kind === 'overdue' ? 'var(--color-danger-bg)' : 'var(--color-warning-bg)'
+  const border = kind === 'overdue' ? 'var(--color-danger-border)' : 'var(--color-warning-border)'
 
   const sendWA = () => {
     const num = g.whatsapp || g.phone
@@ -28,14 +28,14 @@ function ShopRow({ g, kind }: { g: ShopInsightGroup; kind: 'overdue' | 'upcoming
       <div className="flex items-center gap-2 min-w-0">
         <ShopAvatar shop={{ shopName: g.shopName } as any} />
         <div className="min-w-0">
-          <p className="text-xs font-semibold truncate" style={{ color: '#1f2937' }}>{g.shopName}</p>
+          <p className="text-xs font-semibold truncate" style={{ color: 'var(--color-text)' }}>{g.shopName}</p>
           <p className="text-[11px] font-medium" style={{ color: accent }}>
             {kind === 'overdue' ? `${g.maxDaysOverdue}d overdue` : 'due soon'} · {g.billCount} bill{g.billCount > 1 ? 's' : ''}
           </p>
         </div>
       </div>
       <div className="flex items-center gap-2 shrink-0">
-        <span className="text-xs font-semibold" style={{ color: '#1f2937' }}>{fmtAmount(g.pendingAmount)}</span>
+        <span className="text-xs font-semibold" style={{ color: 'var(--color-text)' }}>{fmtAmount(g.pendingAmount)}</span>
         {(g.whatsapp || g.phone) && (
           <button className="wa-btn" onClick={sendWA} title="WhatsApp reminder bhejo">
             <MessageCircle size={12} />
@@ -67,12 +67,12 @@ export default function AIInsights() {
         <div className="flex items-center gap-2.5">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-            style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}
+            style={{ background: 'linear-gradient(135deg, #17140F, #3A362E)' }}
           >
             <Sparkles size={16} color="#fff" />
           </div>
           <div>
-            <p className="text-sm font-semibold" style={{ color: '#1f2937' }}>AI Payment Insights</p>
+            <p className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>AI Payment Insights</p>
             <p className="eyebrow">bot alert</p>
           </div>
         </div>
@@ -82,17 +82,17 @@ export default function AIInsights() {
       </div>
 
       {loading ? (
-        <div className="flex items-center gap-2 py-4" style={{ color: '#9ca3af' }}>
+        <div className="flex items-center gap-2 py-4" style={{ color: 'var(--color-text-faint)' }}>
           <Loader2 className="animate-spin" size={16} />
           <span className="text-sm">Sochte hue... payments check kar raha hu</span>
         </div>
       ) : !data ? (
-        <p className="text-sm" style={{ color: '#9ca3af' }}>Abhi insights load nahi ho paye. Refresh try karo.</p>
+        <p className="text-sm" style={{ color: 'var(--color-text-faint)' }}>Abhi insights load nahi ho paye. Refresh try karo.</p>
       ) : (
         <>
           <div
             className="rounded-xl px-4 py-3 mb-4 text-sm"
-            style={{ background: '#f5f4ff', border: '1px solid #e0defc', color: '#374151', lineHeight: 1.5 }}
+            style={{ background: 'var(--color-primary-soft)', border: '1px solid var(--color-primary-border)', color: 'var(--color-text-soft)', lineHeight: 1.5 }}
           >
             {data.summary}
           </div>
@@ -100,14 +100,14 @@ export default function AIInsights() {
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <div className="flex items-center gap-1.5 mb-2">
-                <AlertTriangle size={13} style={{ color: '#dc2626' }} />
-                <span className="text-xs font-semibold" style={{ color: '#dc2626' }}>
+                <AlertTriangle size={13} style={{ color: 'var(--color-danger)' }} />
+                <span className="text-xs font-semibold" style={{ color: 'var(--color-danger)' }}>
                   Overdue · {fmtAmount(data.totalOverdueAmount)}
                 </span>
               </div>
               <div className="space-y-1.5">
                 {data.overdue.length === 0 && (
-                  <p className="text-xs" style={{ color: '#9ca3af' }}>Koi overdue payment nahi hai 🎉</p>
+                  <p className="text-xs" style={{ color: 'var(--color-text-faint)' }}>Koi overdue payment nahi hai 🎉</p>
                 )}
                 {(showAll === 'overdue' ? data.overdue : data.overdue.slice(0, 3)).map(g => (
                   <ShopRow key={g.shopId} g={g} kind="overdue" />
@@ -115,7 +115,7 @@ export default function AIInsights() {
                 {data.overdue.length > 3 && (
                   <button
                     className="text-xs font-medium"
-                    style={{ color: '#6366f1' }}
+                    style={{ color: 'var(--color-text)' }}
                     onClick={() => setShowAll(showAll === 'overdue' ? null : 'overdue')}
                   >
                     {showAll === 'overdue' ? 'Kam dikhao' : `+${data.overdue.length - 3} aur dekho`}
@@ -125,14 +125,14 @@ export default function AIInsights() {
             </div>
             <div>
               <div className="flex items-center gap-1.5 mb-2">
-                <Clock size={13} style={{ color: '#d97706' }} />
-                <span className="text-xs font-semibold" style={{ color: '#d97706' }}>
+                <Clock size={13} style={{ color: 'var(--color-warning)' }} />
+                <span className="text-xs font-semibold" style={{ color: 'var(--color-warning)' }}>
                   Jaldi due · {fmtAmount(data.totalUpcomingAmount)}
                 </span>
               </div>
               <div className="space-y-1.5">
                 {data.upcoming.length === 0 && (
-                  <p className="text-xs" style={{ color: '#9ca3af' }}>Agle 7 din mein kuch due nahi hai</p>
+                  <p className="text-xs" style={{ color: 'var(--color-text-faint)' }}>Agle 7 din mein kuch due nahi hai</p>
                 )}
                 {(showAll === 'upcoming' ? data.upcoming : data.upcoming.slice(0, 3)).map(g => (
                   <ShopRow key={g.shopId} g={g} kind="upcoming" />
@@ -140,7 +140,7 @@ export default function AIInsights() {
                 {data.upcoming.length > 3 && (
                   <button
                     className="text-xs font-medium"
-                    style={{ color: '#6366f1' }}
+                    style={{ color: 'var(--color-text)' }}
                     onClick={() => setShowAll(showAll === 'upcoming' ? null : 'upcoming')}
                   >
                     {showAll === 'upcoming' ? 'Kam dikhao' : `+${data.upcoming.length - 3} aur dekho`}

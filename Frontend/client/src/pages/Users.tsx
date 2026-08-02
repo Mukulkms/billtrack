@@ -6,7 +6,7 @@ import api from '../api/client'
 import toast from 'react-hot-toast'
 
 const ROLE_CONFIG = {
-  ADMIN:   { label: 'Admin',   bg: '#ede9fe', color: '#7c3aed', border: '#c4b5fd', icon: <Shield size={10}/> },
+  ADMIN:   { label: 'Admin',   bg: '#F0EDE4', color: '#17140F', border: '#DAD4C2', icon: <Shield size={10}/> },
   MANAGER: { label: 'Manager', bg: '#fef3c7', color: '#d97706', border: '#fcd34d', icon: <UserCheck size={10}/> },
   STAFF:   { label: 'Staff',   bg: '#f0f9ff', color: '#0369a1', border: '#bae6fd', icon: <UserIcon size={10}/> },
 }
@@ -16,7 +16,7 @@ function getInitials(name: string) {
 }
 
 function getAvatarColor(name: string) {
-  const colors = ['#6366f1','#8b5cf6','#ec4899','#f59e0b','#10b981','#3b82f6','#ef4444']
+  const colors = ['#17140F','#3A362E','#ec4899','#f59e0b','#10b981','#3b82f6','#ef4444']
   return colors[name.charCodeAt(0) % colors.length]
 }
 
@@ -128,8 +128,8 @@ export default function Users() {
 
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h1 className="text-lg font-bold" style={{ color: '#0f1535' }}>Users</h1>
-          <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>
+          <h1 className="text-lg font-bold" style={{ color: '#17140F' }}>Users</h1>
+          <p className="text-xs mt-0.5" style={{ color: '#7A7566' }}>
             {users.length} team member{users.length !== 1 ? 's' : ''}
           </p>
         </div>
@@ -158,14 +158,14 @@ export default function Users() {
       {showForm && (
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setShowForm(false)}>
           <div className="modal max-w-sm">
-            <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid #f0f1f8' }}>
+            <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid #EFEADC' }}>
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: '#ede9fe' }}>
-                  <UsersIcon size={14} style={{ color: '#7c3aed' }} />
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: '#F0EDE4' }}>
+                  <UsersIcon size={14} style={{ color: '#17140F' }} />
                 </div>
-                <h3 className="font-semibold text-sm" style={{ color: '#0f1535' }}>Add user</h3>
+                <h3 className="font-semibold text-sm" style={{ color: '#17140F' }}>Add user</h3>
               </div>
-              <button className="btn btn-sm" style={{ color: '#6b7280' }} onClick={() => setShowForm(false)} aria-label="Close"><X size={14} /></button>
+              <button className="btn btn-sm" style={{ color: '#7A7566' }} onClick={() => setShowForm(false)} aria-label="Close"><X size={14} /></button>
             </div>
 
             <div className="p-5 space-y-3">
@@ -197,9 +197,9 @@ export default function Users() {
                       onClick={() => set('role', role)}
                       className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold transition-all"
                       style={{
-                        background: form.role === role ? cfg.bg : '#f7f8fc',
-                        color: form.role === role ? cfg.color : '#6b7280',
-                        border: `1.5px solid ${form.role === role ? cfg.border : '#e8eaf2'}`,
+                        background: form.role === role ? cfg.bg : '#F0EDE4',
+                        color: form.role === role ? cfg.color : '#7A7566',
+                        border: `1.5px solid ${form.role === role ? cfg.border : '#E7E1D3'}`,
                       }}
                     >
                       {cfg.icon} {cfg.label}
@@ -209,8 +209,8 @@ export default function Users() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 px-5 py-4" style={{ borderTop: '1px solid #f0f1f8' }}>
-              <button className="btn" style={{ color: '#374151' }} onClick={() => setShowForm(false)}>Cancel</button>
+            <div className="flex justify-end gap-2 px-5 py-4" style={{ borderTop: '1px solid #EFEADC' }}>
+              <button className="btn" style={{ color: '#3A362E' }} onClick={() => setShowForm(false)}>Cancel</button>
               <button className="btn btn-primary" onClick={submit} disabled={saving} style={{ minWidth: 80 }}>
                 {saving ? <Loader2 size={14} className="animate-spin" /> : 'Save user'}
               </button>
@@ -222,9 +222,9 @@ export default function Users() {
       {showEdit && editForm && (
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setShowEdit(false)}>
           <div className="modal max-w-sm">
-            <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid #f0f1f8' }}>
-              <h3 className="font-semibold text-sm" style={{ color: '#0f1535' }}>Edit User</h3>
-              <button className="btn btn-sm" style={{ color: '#6b7280' }} onClick={() => setShowEdit(false)} aria-label="Close"><X size={14} /></button>
+            <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid #EFEADC' }}>
+              <h3 className="font-semibold text-sm" style={{ color: '#17140F' }}>Edit User</h3>
+              <button className="btn btn-sm" style={{ color: '#7A7566' }} onClick={() => setShowEdit(false)} aria-label="Close"><X size={14} /></button>
             </div>
 
             <div className="p-5 space-y-3">
@@ -250,9 +250,9 @@ export default function Users() {
                       onClick={() => setEditForm({...editForm, role: role as any})}
                       className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold transition-all"
                       style={{
-                        background: editForm.role === role ? cfg.bg : '#f7f8fc',
-                        color: editForm.role === role ? cfg.color : '#6b7280',
-                        border: `1.5px solid ${editForm.role === role ? cfg.border : '#e8eaf2'}`,
+                        background: editForm.role === role ? cfg.bg : '#F0EDE4',
+                        color: editForm.role === role ? cfg.color : '#7A7566',
+                        border: `1.5px solid ${editForm.role === role ? cfg.border : '#E7E1D3'}`,
                       }}
                     >
                       {cfg.icon} {cfg.label}
@@ -267,12 +267,12 @@ export default function Users() {
                   checked={editForm.isActive}
                   onChange={e => setEditForm({...editForm, isActive: e.target.checked})}
                 />
-                <label htmlFor="isActive" className="text-xs" style={{ color: '#374151' }}>Active</label>
+                <label htmlFor="isActive" className="text-xs" style={{ color: '#3A362E' }}>Active</label>
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 px-5 py-4" style={{ borderTop: '1px solid #f0f1f8' }}>
-              <button className="btn" style={{ color: '#374151' }} onClick={() => setShowEdit(false)}>Cancel</button>
+            <div className="flex justify-end gap-2 px-5 py-4" style={{ borderTop: '1px solid #EFEADC' }}>
+              <button className="btn" style={{ color: '#3A362E' }} onClick={() => setShowEdit(false)}>Cancel</button>
               <button className="btn btn-primary" onClick={handleUpdate} disabled={editSaving}>
                 {editSaving ? <Loader2 size={14} className="animate-spin" /> : 'Update'}
               </button>
@@ -284,12 +284,12 @@ export default function Users() {
       {showReset && (
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setShowReset(false)}>
           <div className="modal max-w-sm">
-            <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid #f0f1f8' }}>
+            <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid #EFEADC' }}>
               <div className="flex items-center gap-2">
-                <KeyRound size={16} style={{ color: '#7c3aed' }} />
-                <h3 className="font-semibold text-sm" style={{ color: '#0f1535' }}>Reset Password</h3>
+                <KeyRound size={16} style={{ color: '#17140F' }} />
+                <h3 className="font-semibold text-sm" style={{ color: '#17140F' }}>Reset Password</h3>
               </div>
-              <button className="btn btn-sm" style={{ color: '#6b7280' }} onClick={() => setShowReset(false)} aria-label="Close"><X size={14} /></button>
+              <button className="btn btn-sm" style={{ color: '#7A7566' }} onClick={() => setShowReset(false)} aria-label="Close"><X size={14} /></button>
             </div>
 
             <div className="p-5 space-y-3">
@@ -305,8 +305,8 @@ export default function Users() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 px-5 py-4" style={{ borderTop: '1px solid #f0f1f8' }}>
-              <button className="btn" style={{ color: '#374151' }} onClick={() => setShowReset(false)}>Cancel</button>
+            <div className="flex justify-end gap-2 px-5 py-4" style={{ borderTop: '1px solid #EFEADC' }}>
+              <button className="btn" style={{ color: '#3A362E' }} onClick={() => setShowReset(false)}>Cancel</button>
               <button className="btn btn-primary" onClick={handleResetPassword} disabled={resetSaving}>
                 {resetSaving ? <Loader2 size={14} className="animate-spin" /> : 'Reset Password'}
               </button>
@@ -317,26 +317,26 @@ export default function Users() {
 
       {loading ? (
         <div className="flex justify-center py-20">
-          <Loader2 className="animate-spin" style={{ color: '#6366f1' }} size={24} />
+          <Loader2 className="animate-spin" style={{ color: '#17140F' }} size={24} />
         </div>
       ) : users.length === 0 ? (
-        <div className="rounded-xl py-20 text-center" style={{ background: '#ffffff', border: '1px solid #e8eaf2' }}>
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: '#ede9fe' }}>
-            <UsersIcon size={24} style={{ color: '#7c3aed' }} />
+        <div className="rounded-xl py-20 text-center" style={{ background: '#ffffff', border: '1px solid #E7E1D3' }}>
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: '#F0EDE4' }}>
+            <UsersIcon size={24} style={{ color: '#17140F' }} />
           </div>
-          <p className="text-sm font-semibold" style={{ color: '#1f2937' }}>No users yet</p>
-          <p className="text-xs mt-1 mb-4" style={{ color: '#9ca3af' }}>Add your first team member</p>
+          <p className="text-sm font-semibold" style={{ color: '#17140F' }}>No users yet</p>
+          <p className="text-xs mt-1 mb-4" style={{ color: '#A39D8A' }}>Add your first team member</p>
           <button className="btn btn-primary btn-sm" onClick={() => setShowForm(true)}>
             <Plus size={14} /> Add user
           </button>
         </div>
       ) : (
-        <div className="rounded-xl overflow-hidden" style={{ background: '#fff', border: '1px solid #e8eaf2', boxShadow: '0 1px 4px rgba(15,21,53,0.06)' }}>
+        <div className="rounded-xl overflow-hidden" style={{ background: '#fff', border: '1px solid #E7E1D3', boxShadow: '0 1px 4px rgba(15,21,53,0.06)' }}>
           
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr style={{ borderBottom: '1px solid #f0f1f8' }}>
+                <tr style={{ borderBottom: '1px solid #EFEADC' }}>
                   <th className="th">User</th>
                   <th className="th">Email</th>
                   <th className="th">Phone</th>
@@ -353,8 +353,8 @@ export default function Users() {
                     <tr
                       key={u.id}
                       className="transition-colors"
-                      style={{ borderBottom: '1px solid #f7f8fc' }}
-                      onMouseEnter={e => (e.currentTarget.style.background = '#fafbff')}
+                      style={{ borderBottom: '1px solid #F0EDE4' }}
+                      onMouseEnter={e => (e.currentTarget.style.background = '#FBF9F2')}
                       onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                     >
                       <td className="td">
@@ -362,21 +362,21 @@ export default function Users() {
                           <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0" style={{ background: avatarColor }}>
                             {getInitials(u.name)}
                           </div>
-                          <span className="text-sm font-medium" style={{ color: '#1f2937' }}>{u.name}</span>
+                          <span className="text-sm font-medium" style={{ color: '#17140F' }}>{u.name}</span>
                         </div>
                       </td>
-                      <td className="td"><span className="text-xs" style={{ color: '#6b7280' }}>{u.email}</span></td>
-                      <td className="td"><span className="text-xs" style={{ color: '#6b7280' }}>{u.phone || '—'}</span></td>
+                      <td className="td"><span className="text-xs" style={{ color: '#7A7566' }}>{u.email}</span></td>
+                      <td className="td"><span className="text-xs" style={{ color: '#7A7566' }}>{u.phone || '—'}</span></td>
                       <td className="td">
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.border}` }}>
                           {cfg.icon} {cfg.label}
                         </span>
                       </td>
-                      <td className="td"><span className="text-xs" style={{ color: '#9ca3af' }}>{fmtDate(u.createdAt)}</span></td>
+                      <td className="td"><span className="text-xs" style={{ color: '#A39D8A' }}>{fmtDate(u.createdAt)}</span></td>
                       <td className="td">
                         <div className="flex gap-1">
                           <button className="p-1.5 rounded-lg hover:bg-indigo-50 transition" onClick={() => openEdit(u)} title="Edit">
-                            <Pencil size={14} style={{ color: '#6366f1' }} />
+                            <Pencil size={14} style={{ color: '#17140F' }} />
                           </button>
                           <button className="p-1.5 rounded-lg hover:bg-amber-50 transition" onClick={() => openReset(u.id)} title="Reset Password">
                             <KeyRound size={14} style={{ color: '#d97706' }} />
@@ -393,7 +393,7 @@ export default function Users() {
             </table>
           </div>
 
-          <div className="block md:hidden divide-y" style={{ borderColor: '#f0f1f8' }}>
+          <div className="block md:hidden divide-y" style={{ borderColor: '#EFEADC' }}>
             {users.map(u => {
               const cfg = ROLE_CONFIG[u.role as keyof typeof ROLE_CONFIG] || ROLE_CONFIG.STAFF
               const avatarColor = getAvatarColor(u.name)
@@ -404,8 +404,8 @@ export default function Users() {
                       {getInitials(u.name)}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold truncate" style={{ color: '#1f2937' }}>{u.name}</p>
-                      <p className="text-xs truncate" style={{ color: '#6b7280' }}>{u.email}</p>
+                      <p className="text-sm font-semibold truncate" style={{ color: '#17140F' }}>{u.name}</p>
+                      <p className="text-xs truncate" style={{ color: '#7A7566' }}>{u.email}</p>
                     </div>
                     <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold flex-shrink-0" style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.border}` }}>
                       {cfg.icon} {cfg.label}

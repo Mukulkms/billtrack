@@ -16,7 +16,7 @@ export default function ShopCard({ shop, onDelete }: Props) {
       className="rounded-xl transition-all"
       style={{
         background: '#ffffff',
-        border: `1px solid ${shop._hasOverdue ? '#fca5a5' : '#e8eaf2'}`,
+        border: `1px solid ${shop._hasOverdue ? '#fca5a5' : '#E7E1D3'}`,
         boxShadow: '0 1px 4px rgba(15,21,53,0.06)',
         overflow: 'hidden',
       }}
@@ -35,8 +35,8 @@ export default function ShopCard({ shop, onDelete }: Props) {
               {initials(shop.shopName)}
             </div>
             <div className="min-w-0">
-              <p className="font-semibold text-sm truncate" style={{ color: '#1f2937' }}>{shop.shopName}</p>
-              <p className="text-xs truncate" style={{ color: '#6b7280' }}>{shop.ownerName}</p>
+              <p className="font-semibold text-sm truncate" style={{ color: '#17140F' }}>{shop.shopName}</p>
+              <p className="text-xs truncate" style={{ color: '#7A7566' }}>{shop.ownerName}</p>
             </div>
           </div>
 
@@ -44,7 +44,7 @@ export default function ShopCard({ shop, onDelete }: Props) {
             <Link
               to={`/shops/${shop.id}/edit`}
               className="btn btn-sm"
-              style={{ padding: '4px 8px', color: '#6366f1' }}
+              style={{ padding: '4px 8px', color: '#17140F' }}
               onMouseEnter={e => { e.currentTarget.style.background = '#eef2ff'; e.currentTarget.style.borderColor = '#c7d2fe' }}
               onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#e2e5f0' }}
             >
@@ -52,10 +52,10 @@ export default function ShopCard({ shop, onDelete }: Props) {
             </Link>
             <button
               className="btn btn-sm"
-              style={{ padding: '4px 8px', color: '#9ca3af' }}
+              style={{ padding: '4px 8px', color: '#A39D8A' }}
               onClick={() => onDelete(shop.id, shop.shopName)}
               onMouseEnter={e => { e.currentTarget.style.color = '#dc2626'; e.currentTarget.style.borderColor = '#fca5a5'; e.currentTarget.style.background = '#fff1f2' }}
-              onMouseLeave={e => { e.currentTarget.style.color = '#9ca3af'; e.currentTarget.style.borderColor = '#e2e5f0'; e.currentTarget.style.background = '#fff' }}
+              onMouseLeave={e => { e.currentTarget.style.color = '#A39D8A'; e.currentTarget.style.borderColor = '#e2e5f0'; e.currentTarget.style.background = '#fff' }}
             >
               <Trash2 size={12} />
             </button>
@@ -64,43 +64,43 @@ export default function ShopCard({ shop, onDelete }: Props) {
 
         <div className="space-y-1 mb-3">
           {shop.phone && (
-            <p className="text-xs flex items-center gap-1.5" style={{ color: '#6b7280' }}>
+            <p className="text-xs flex items-center gap-1.5" style={{ color: '#7A7566' }}>
               <Phone size={11} style={{ flexShrink: 0 }} /> {shop.phone}
               {shop.whatsapp && shop.whatsapp !== shop.phone && (
-                <span style={{ color: '#9ca3af' }}>· WA: {shop.whatsapp}</span>
+                <span style={{ color: '#A39D8A' }}>· WA: {shop.whatsapp}</span>
               )}
             </p>
           )}
           {shop.city && (
-            <p className="text-xs flex items-center gap-1.5" style={{ color: '#6b7280' }}>
+            <p className="text-xs flex items-center gap-1.5" style={{ color: '#7A7566' }}>
               <MapPin size={11} style={{ flexShrink: 0 }} />
               {[shop.city, shop.state, shop.pincode].filter(Boolean).join(', ')}
             </p>
           )}
           {shop.gstNumber && (
-            <p className="text-xs font-mono" style={{ color: '#9ca3af' }}>GST: {shop.gstNumber}</p>
+            <p className="text-xs font-mono" style={{ color: '#A39D8A' }}>GST: {shop.gstNumber}</p>
           )}
           {shop.email && (
-            <p className="text-xs truncate" style={{ color: '#9ca3af' }}>{shop.email}</p>
+            <p className="text-xs truncate" style={{ color: '#A39D8A' }}>{shop.email}</p>
           )}
         </div>
 
-        <div className="grid grid-cols-3 gap-2 text-center rounded-xl p-3 mb-3" style={{ background: '#f7f8fc' }}>
+        <div className="grid grid-cols-3 gap-2 text-center rounded-xl p-3 mb-3" style={{ background: '#F0EDE4' }}>
           <div>
-            <p className="text-sm font-bold" style={{ color: '#1f2937' }}>{shop.bills?.length || 0}</p>
-            <p className="text-xs" style={{ color: '#9ca3af' }}>Bills</p>
+            <p className="text-sm font-bold" style={{ color: '#17140F' }}>{shop.bills?.length || 0}</p>
+            <p className="text-xs" style={{ color: '#A39D8A' }}>Bills</p>
           </div>
           <div>
-            <p className="text-sm font-bold" style={{ color: shop._pending > 0 ? '#dc2626' : '#9ca3af' }}>
+            <p className="text-sm font-bold" style={{ color: shop._pending > 0 ? '#dc2626' : '#A39D8A' }}>
               {shop._pending}
             </p>
-            <p className="text-xs" style={{ color: '#9ca3af' }}>Pending</p>
+            <p className="text-xs" style={{ color: '#A39D8A' }}>Pending</p>
           </div>
           <div>
-            <p className="text-xs font-bold" style={{ color: shop._outstanding > 0 ? '#d97706' : '#9ca3af' }}>
+            <p className="text-xs font-bold" style={{ color: shop._outstanding > 0 ? '#d97706' : '#A39D8A' }}>
               {fmtAmount(shop._outstanding)}
             </p>
-            <p className="text-xs" style={{ color: '#9ca3af' }}>Due</p>
+            <p className="text-xs" style={{ color: '#A39D8A' }}>Due</p>
           </div>
         </div>
 

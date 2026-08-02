@@ -214,27 +214,27 @@ const handleCreateCategory = async () => {
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="modal max-w-md max-h-[90vh] overflow-y-auto">
 
-        <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid #f0f1f8' }}>
-          <h3 className="font-semibold text-sm" style={{ color: '#0f1535' }}>{isEdit ? 'Edit bill' : 'Add bill'}</h3>
+        <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid #EFEADC' }}>
+          <h3 className="font-semibold text-sm" style={{ color: '#17140F' }}>{isEdit ? 'Edit bill' : 'Add bill'}</h3>
           <button className="btn btn-sm" onClick={onClose}><X size={14} /></button>
         </div>
 
         <div className="p-5 space-y-4">
 
           {!isEdit && (
-          <div className="rounded-xl p-4 space-y-3" style={{ background: '#fafbff', border: '1px solid #e8eaf2' }}>
-            <p className="text-xs font-semibold" style={{ color: '#374151' }}>
+          <div className="rounded-xl p-4 space-y-3" style={{ background: '#FBF9F2', border: '1px solid #E7E1D3' }}>
+            <p className="text-xs font-semibold" style={{ color: '#3A362E' }}>
               📸 Scan bill — AI will extract data automatically
             </p>
             <div className="flex gap-2">
               <button className="btn flex-1 justify-center"
-                style={{ borderStyle: 'dashed', borderColor: '#6366f1', color: '#6366f1', background: '#fafbff' }}
+                style={{ borderStyle: 'dashed', borderColor: '#17140F', color: '#17140F', background: '#FBF9F2' }}
                 onClick={() => fileRef.current?.click()} disabled={scanning}>
                 {scanning ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
                 Upload photo
               </button>
               <button className="btn flex-1 justify-center"
-                style={{ borderStyle: 'dashed', borderColor: '#8b5cf6', color: '#8b5cf6', background: '#fafbff' }}
+                style={{ borderStyle: 'dashed', borderColor: '#3A362E', color: '#3A362E', background: '#FBF9F2' }}
                 onClick={() => camRef.current?.click()} disabled={scanning}>
                 {scanning ? <Loader2 size={14} className="animate-spin" /> : <Camera size={14} />}
                 Camera
@@ -247,7 +247,7 @@ const handleCreateCategory = async () => {
               onChange={e => { if (e.target.files?.[0]) scanBill(e.target.files[0]); e.target.value = '' }} />
 
             {scanning && (
-              <div className="flex items-center gap-2 py-1" style={{ color: '#6366f1' }}>
+              <div className="flex items-center gap-2 py-1" style={{ color: '#17140F' }}>
                 <Loader2 size={13} className="animate-spin flex-shrink-0" />
                 <span className="text-xs">AI bill padh raha hai... please wait</span>
               </div>
@@ -276,9 +276,9 @@ const handleCreateCategory = async () => {
 
           {!isEdit && (
           <div className="flex items-center gap-3">
-            <div className="flex-1 h-px" style={{ background: '#f0f1f8' }} />
-            <span className="text-xs" style={{ color: '#9ca3af' }}>or fill manually</span>
-            <div className="flex-1 h-px" style={{ background: '#f0f1f8' }} />
+            <div className="flex-1 h-px" style={{ background: '#EFEADC' }} />
+            <span className="text-xs" style={{ color: '#A39D8A' }}>or fill manually</span>
+            <div className="flex-1 h-px" style={{ background: '#EFEADC' }} />
           </div>
           )}
 
@@ -298,12 +298,12 @@ const handleCreateCategory = async () => {
 
             {showShopDropdown && (
               <div className="absolute z-10 w-full mt-1 rounded-xl overflow-hidden"
-                style={{ background: '#fff', border: '1px solid #e8eaf2', boxShadow: '0 4px 16px rgba(0,0,0,0.08)', maxHeight: 200, overflowY: 'auto' }}>
+                style={{ background: '#fff', border: '1px solid #E7E1D3', boxShadow: '0 4px 16px rgba(0,0,0,0.08)', maxHeight: 200, overflowY: 'auto' }}>
 
                 {filteredShops.map(s => (
                   <div key={s.id}
                     className="px-3 py-2 text-sm cursor-pointer"
-                    style={{ color: '#0f1535' }}
+                    style={{ color: '#17140F' }}
                     onMouseDown={() => {
                       set('shopId', s.id)
                       setShopQuery(s.shopName)
@@ -317,7 +317,7 @@ const handleCreateCategory = async () => {
                 ))}
 
                 {filteredShops.length === 0 && shopQuery.trim() && (
-                  <div className="px-3 py-2 text-xs" style={{ color: '#9ca3af' }}>
+                  <div className="px-3 py-2 text-xs" style={{ color: '#A39D8A' }}>
                     No shop found
                   </div>
                 )}
@@ -327,7 +327,7 @@ const handleCreateCategory = async () => {
                 ) && (
                   <div
                     className="px-3 py-2 text-sm cursor-pointer font-medium flex items-center gap-1.5"
-                    style={{ color: '#6366f1', borderTop: filteredShops.length ? '1px solid #f0f1f8' : 'none' }}
+                    style={{ color: '#17140F', borderTop: filteredShops.length ? '1px solid #EFEADC' : 'none' }}
                     onMouseDown={() => {
                       setNewShopName(shopQuery.trim())
                       setShowNewShop(true)
@@ -342,8 +342,8 @@ const handleCreateCategory = async () => {
 
             {showNewShop && (
               <div className="mt-2 rounded-xl p-3 space-y-2"
-                style={{ background: '#f5f3ff', border: '1px solid #c4b5fd' }}>
-                <p className="text-xs font-semibold" style={{ color: '#5b21b6' }}>Create new shop</p>
+                style={{ background: '#f5f3ff', border: '1px solid #DAD4C2' }}>
+                <p className="text-xs font-semibold" style={{ color: '#3A362E' }}>Create new shop</p>
                 <div className="flex gap-2">
                   <input
                     className="input flex-1"
@@ -361,12 +361,12 @@ const handleCreateCategory = async () => {
                   >
                     {creatingShop ? <Loader2 size={13} className="animate-spin" /> : <Plus size={13} />}
                   </button>
-                  <button className="btn" style={{ flexShrink: 0, color: '#6b7280' }}
+                  <button className="btn" style={{ flexShrink: 0, color: '#7A7566' }}
                     onClick={() => { setShowNewShop(false); setNewShopName('') }}>
                     <X size={13} />
                   </button>
                 </div>
-                <p className="text-xs" style={{ color: '#7c3aed' }}>
+                <p className="text-xs" style={{ color: '#17140F' }}>
                   Baaki details baad mein Shop page pe fill karna
                 </p>
               </div>
@@ -393,8 +393,8 @@ const handleCreateCategory = async () => {
 
             {showNewCategory && (
               <div className="mt-2 rounded-xl p-3 space-y-2"
-                style={{ background: '#f5f3ff', border: '1px solid #c4b5fd' }}>
-                <p className="text-xs font-semibold" style={{ color: '#5b21b6' }}>Create new category</p>
+                style={{ background: '#f5f3ff', border: '1px solid #DAD4C2' }}>
+                <p className="text-xs font-semibold" style={{ color: '#3A362E' }}>Create new category</p>
                 <div className="flex gap-2">
                   <input
                     className="input flex-1"
@@ -408,7 +408,7 @@ const handleCreateCategory = async () => {
                     onClick={handleCreateCategory} disabled={creatingCategory}>
                     {creatingCategory ? <Loader2 size={13} className="animate-spin" /> : <Plus size={13} />}
                   </button>
-                  <button className="btn" style={{ flexShrink: 0, color: '#6b7280' }}
+                  <button className="btn" style={{ flexShrink: 0, color: '#7A7566' }}
                     onClick={() => { setShowNewCategory(false); setNewCategoryName('') }}>
                     <X size={13} />
                   </button>
@@ -462,7 +462,7 @@ const handleCreateCategory = async () => {
           </div>
         </div>
 
-        <div className="flex justify-end gap-2 px-5 py-4" style={{ borderTop: '1px solid #f0f1f8' }}>
+        <div className="flex justify-end gap-2 px-5 py-4" style={{ borderTop: '1px solid #EFEADC' }}>
           <button className="btn" onClick={onClose}>Cancel</button>
           <button className="btn btn-primary" onClick={submit} disabled={saving}>
             {saving ? <Loader2 size={14} className="animate-spin" /> : isEdit ? 'Update bill' : 'Save bill'}

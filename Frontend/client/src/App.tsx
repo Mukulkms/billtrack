@@ -19,7 +19,7 @@ const Users = lazy(() => import('./pages/Users'))
 function PageFallback() {
   return (
     <div className="flex justify-center items-center py-24">
-      <Loader2 className="animate-spin" size={22} style={{ color: 'var(--color-primary, #6366f1)' }} />
+      <Loader2 className="animate-spin" size={22} style={{ color: 'var(--color-primary, #17140F)' }} />
     </div>
   )
 }

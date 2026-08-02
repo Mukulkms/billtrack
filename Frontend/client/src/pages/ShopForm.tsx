@@ -20,7 +20,7 @@ function Field({ label, value, onChange, type = 'text', placeholder = '', requir
   return (
     <div>
       <label className="label flex items-center gap-1.5">
-        {Icon && <Icon size={12} style={{ color: '#9ca3af' }} />}
+        {Icon && <Icon size={12} style={{ color: '#A39D8A' }} />}
         {label}
       </label>
       <input
@@ -39,13 +39,13 @@ function SectionCard({ icon: Icon, title, children }: { icon: React.ElementType;
   return (
     <div
       className="rounded-xl p-5 mb-4 space-y-4"
-      style={{ background: '#fff', border: '1px solid #e8eaf2', boxShadow: '0 1px 4px rgba(15,21,53,0.06)' }}
+      style={{ background: '#fff', border: '1px solid #E7E1D3', boxShadow: '0 1px 4px rgba(15,21,53,0.06)' }}
     >
       <div className="flex items-center gap-2">
-        <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: '#ede9fe' }}>
-          <Icon size={12} style={{ color: '#7c3aed' }} />
+        <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: '#F0EDE4' }}>
+          <Icon size={12} style={{ color: '#17140F' }} />
         </div>
-        <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#6b7280' }}>
+        <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#7A7566' }}>
           {title}
         </p>
       </div>
@@ -101,7 +101,7 @@ export default function ShopForm() {
   if (fetching) {
     return (
       <div className="flex justify-center py-24">
-        <Loader2 className="animate-spin" style={{ color: '#6366f1' }} size={24} />
+        <Loader2 className="animate-spin" style={{ color: '#17140F' }} size={24} />
       </div>
     )
   }
@@ -114,22 +114,22 @@ export default function ShopForm() {
           type="button"
           className="btn btn-sm"
           onClick={() => navigate(-1)}
-          style={{ color: '#374151' }}
+          style={{ color: '#3A362E' }}
         >
           <ArrowLeft size={14} />
         </button>
         <div className="flex items-center gap-2.5">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #ede9fe, #ddd6fe)' }}
+            style={{ background: 'linear-gradient(135deg, #F0EDE4, #ddd6fe)' }}
           >
-            <Store size={16} style={{ color: '#7c3aed' }} />
+            <Store size={16} style={{ color: '#17140F' }} />
           </div>
           <div>
-            <h1 className="text-base font-bold" style={{ color: '#0f1535' }}>
+            <h1 className="text-base font-bold" style={{ color: '#17140F' }}>
               {isEdit ? 'Edit shop' : 'Add new shop'}
             </h1>
-            <p className="text-[11px]" style={{ color: '#9ca3af' }}>
+            <p className="text-[11px]" style={{ color: '#A39D8A' }}>
               {isEdit ? (form.shopName || 'Update shop details') : 'Fill in the shop details below'}
             </p>
           </div>
@@ -165,7 +165,7 @@ export default function ShopForm() {
           </div>
           <div>
             <label className="label flex items-center gap-1.5">
-              <StickyNote size={12} style={{ color: '#9ca3af' }} />
+              <StickyNote size={12} style={{ color: '#A39D8A' }} />
               Notes
             </label>
             <textarea
@@ -183,7 +183,7 @@ export default function ShopForm() {
             type="button"
             className="btn"
             onClick={() => navigate(-1)}
-            style={{ color: '#374151' }}
+            style={{ color: '#3A362E' }}
           >
             Cancel
           </button>
