@@ -1,13 +1,24 @@
-import { useState } from 'react'
-import { Plus, Receipt } from 'lucide-react'
+import { Suspense, lazy, useState } from 'react'
+import { Plus, Receipt, Loader2 } from 'lucide-react'
 import { useBills } from '../hooks/useBills'
 import BillsFilters from '../components/bills/BillsFilters'
 import BillsTable from '../components/bills/BillsTable'
 import BillsPagination from '../components/bills/BillsPagination'
-import PayModal from '../components/modals/PayModal'
-import AddBillModal from '../components/modals/AddBillModal'
-import BillDetailModal from '../components/modals/BillDetailModal'
 import { Bill } from '../types'
+
+// These modals aren't needed until the user opens one, so they're split
+// into their own chunks instead of loading on every Bills page visit.
+const PayModal = lazy(() => import('../components/modals/PayModal'))
+const AddBillModal = lazy(() => import('../components/modals/AddBillModal'))
+const BillDetailModal = lazy(() => import('../components/modals/BillDetailModal'))
+
+function ModalFallback() {
+  return (
+    <div className="modal-overlay">
+      <Loader2 className="animate-spin text-white" size={22} />
+    </div>
+  )
+}
 
 export default function Bills() {
   const {
@@ -26,10 +37,12 @@ export default function Bills() {
 
   return (
     <div className="p-4 md:p-8 space-y-6 max-w-[1400px] mx-auto">
-      {payBill && <PayModal bill={payBill} onClose={() => { setPayBill(null); load() }} />}
-      {showAdd && <AddBillModal shops={shops} onClose={() => { setShowAdd(false); load() }} />}
-      {editBill && <AddBillModal shops={shops} bill={editBill} onClose={() => { setEditBill(null); load() }} />}
-      {viewBill && <BillDetailModal bill={viewBill} onClose={() => setViewBill(null)} />}
+      <Suspense fallback={<ModalFallback />}>
+        {payBill && <PayModal bill={payBill} onClose={() => { setPayBill(null); load() }} />}
+        {showAdd && <AddBillModal shops={shops} onClose={() => { setShowAdd(false); load() }} />}
+        {editBill && <AddBillModal shops={shops} bill={editBill} onClose={() => { setEditBill(null); load() }} />}
+        {viewBill && <BillDetailModal bill={viewBill} onClose={() => setViewBill(null)} />}
+      </Suspense>
 
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3">

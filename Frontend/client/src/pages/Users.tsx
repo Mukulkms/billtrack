@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { User } from '../types'
 import { fmtDate } from '../utils/helpers'
-import { Loader2, Plus, Users as UsersIcon, Shield, UserCheck, User as UserIcon, Pencil, Trash2, KeyRound } from 'lucide-react'
+import { Loader2, Plus, Users as UsersIcon, Shield, UserCheck, User as UserIcon, Pencil, Trash2, KeyRound, X } from 'lucide-react'
 import api from '../api/client'
 import toast from 'react-hot-toast'
 
@@ -165,7 +165,7 @@ export default function Users() {
                 </div>
                 <h3 className="font-semibold text-sm" style={{ color: '#0f1535' }}>Add user</h3>
               </div>
-              <button className="btn btn-sm" style={{ color: '#6b7280' }} onClick={() => setShowForm(false)}>✕</button>
+              <button className="btn btn-sm" style={{ color: '#6b7280' }} onClick={() => setShowForm(false)} aria-label="Close"><X size={14} /></button>
             </div>
 
             <div className="p-5 space-y-3">
@@ -224,7 +224,7 @@ export default function Users() {
           <div className="modal max-w-sm">
             <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid #f0f1f8' }}>
               <h3 className="font-semibold text-sm" style={{ color: '#0f1535' }}>Edit User</h3>
-              <button className="btn btn-sm" style={{ color: '#6b7280' }} onClick={() => setShowEdit(false)}>✕</button>
+              <button className="btn btn-sm" style={{ color: '#6b7280' }} onClick={() => setShowEdit(false)} aria-label="Close"><X size={14} /></button>
             </div>
 
             <div className="p-5 space-y-3">
@@ -289,7 +289,7 @@ export default function Users() {
                 <KeyRound size={16} style={{ color: '#7c3aed' }} />
                 <h3 className="font-semibold text-sm" style={{ color: '#0f1535' }}>Reset Password</h3>
               </div>
-              <button className="btn btn-sm" style={{ color: '#6b7280' }} onClick={() => setShowReset(false)}>✕</button>
+              <button className="btn btn-sm" style={{ color: '#6b7280' }} onClick={() => setShowReset(false)} aria-label="Close"><X size={14} /></button>
             </div>
 
             <div className="p-5 space-y-3">

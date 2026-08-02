@@ -8,5 +8,17 @@ export default defineConfig({
     proxy: {
       '/api': { target: 'http://localhost:5000', changeOrigin: true }
     }
-  }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        // Split third-party libs into their own vendor chunk so they're
+        // cached independently of app code — app updates won't force a
+        // re-download of react/react-dom/router on every deploy.
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+        },
+      },
+    },
+  },
 })

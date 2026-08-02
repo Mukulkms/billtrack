@@ -16,8 +16,7 @@
     "lucide-react": "^0.383.0",
     "react-hot-toast": "^2.4.1",
     "date-fns": "^3.6.0",
-    "clsx": "^2.1.1",
-    "tesseract.js": "^5.1.0"
+    "clsx": "^2.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

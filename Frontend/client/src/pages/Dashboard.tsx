@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
 import { Link } from "react-router-dom";
 import {
   AlertTriangle,
@@ -8,16 +8,18 @@ import {
   CheckCircle,
   Store,
   Wallet,
+  Loader2,
 } from "lucide-react";
 import { getDashboardStatsApi } from "../api/dashboard";
 import { DashboardStats } from "../types";
 import { fmtAmount, fmtDate, daysLeft } from "../utils/helpers";
 import StatusPill from "../components/ui/StatusPill";
 import ShopAvatar from "../components/ui/ShopAvatar";
-import AddBillModal from "../components/modals/AddBillModal";
 import AIInsights from "../components/dashboard/AIInsights";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
+
+const AddBillModal = lazy(() => import("../components/modals/AddBillModal"));
 
 const C = {
   violet: "#7c3aed",
@@ -128,12 +130,14 @@ export default function Dashboard() {
   return (
     <div className="p-4 md:p-6 space-y-5">
       {showAddBill && (
-        <AddBillModal
-          onClose={() => {
-            setShowAddBill(false);
-            getDashboardStatsApi().then(setStats).catch(() => {});
-          }}
-        />
+        <Suspense fallback={<div className="modal-overlay"><Loader2 className="animate-spin text-white" size={22} /></div>}>
+          <AddBillModal
+            onClose={() => {
+              setShowAddBill(false);
+              getDashboardStatsApi().then(setStats).catch(() => {});
+            }}
+          />
+        </Suspense>
       )}
 
       <div className="flex items-center justify-between gap-3 flex-wrap">

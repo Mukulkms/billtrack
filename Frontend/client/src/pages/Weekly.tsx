@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense, lazy } from 'react'
 import { getBillsApi } from '../api/bills'
 import { Bill } from '../types'
 import { fmtAmount, fmtDate, daysLeft } from '../utils/helpers'
 import ShopAvatar from '../components/ui/ShopAvatar'
-import PayModal from '../components/modals/PayModal'
 import StatusPill from '../components/ui/StatusPill'
 import { Loader2, CalendarDays } from 'lucide-react'
+
+const PayModal = lazy(() => import('../components/modals/PayModal'))
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
@@ -45,7 +46,9 @@ export default function Weekly() {
   return (
     <div className="p-4 md:p-6 space-y-5">
       {payBill && (
-        <PayModal bill={payBill} onClose={() => { setPayBill(null); load() }} />
+        <Suspense fallback={<div className="modal-overlay"><Loader2 className="animate-spin text-white" size={22} /></div>}>
+          <PayModal bill={payBill} onClose={() => { setPayBill(null); load() }} />
+        </Suspense>
       )}
 
       {/* Header */}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Store, FileText, Users, LogOut, Receipt, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Store, FileText, Users, LogOut, Receipt, Menu, X, Bell, CalendarDays } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import clsx from 'clsx'
 
@@ -8,6 +8,8 @@ const NAV = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/shops', label: 'Shops', icon: Store },
   { to: '/bills', label: 'Bills', icon: FileText },
+  { to: '/reminders', label: 'Reminders', icon: Bell },
+  { to: '/weekly', label: 'Weekly view', icon: CalendarDays },
   { to: '/users', label: 'Users', icon: Users, adminOnly: true },
 ]
 

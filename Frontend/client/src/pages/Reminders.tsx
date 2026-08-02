@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense, lazy } from 'react'
 import { AlertCircle, Clock, Calendar, MessageCircle, Loader2, CheckCircle2, Phone, Settings } from 'lucide-react'
 import { getUpcomingRemindersApi } from '../api/reminders'
 import { Bill } from '../types'
 import { fmtAmount, fmtDate, daysLeft } from '../utils/helpers'
 import ShopAvatar from '../components/ui/ShopAvatar'
-import PayModal from '../components/modals/PayModal'
 import toast from 'react-hot-toast'
+
+const PayModal = lazy(() => import('../components/modals/PayModal'))
 
 export default function Reminders() {
   const [bills, setBills] = useState<Bill[]>([])
@@ -141,7 +142,11 @@ export default function Reminders() {
 
   return (
     <div className="p-4 md:p-6 space-y-6">
-      {payBill && <PayModal bill={payBill} onClose={() => { setPayBill(null); load() }} />}
+      {payBill && (
+        <Suspense fallback={<div className="modal-overlay"><Loader2 className="animate-spin text-white" size={22} /></div>}>
+          <PayModal bill={payBill} onClose={() => { setPayBill(null); load() }} />
+        </Suspense>
+      )}
 
       {/* Header + Staff Number Setting */}
       <div className="flex items-start justify-between gap-3 flex-wrap">
