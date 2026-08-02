@@ -23,17 +23,17 @@ export default function BillsTable({
 
   if (loading) return (
     <div className="flex justify-center py-20">
-      <Loader2 className="animate-spin" style={{ color: '#17140F' }} size={24} />
+      <Loader2 className="animate-spin" style={{ color: '#6366f1' }} size={24} />
     </div>
   )
 
   return (
     <div className="rounded-xl overflow-hidden"
-      style={{ background: '#fff', border: '1px solid #E7E1D3', boxShadow: '0 1px 4px rgba(15,21,53,0.06)' }}>
+      style={{ background: '#fff', border: '1px solid #e8eaf2', boxShadow: '0 1px 4px rgba(15,21,53,0.06)' }}>
       <div className="overflow-x-auto">
         <table className="w-full" style={{ minWidth: 700 }}>
           <thead>
-            <tr style={{ borderBottom: '1px solid #EFEADC' }}>
+            <tr style={{ borderBottom: '1px solid #f0f1f8' }}>
               {['Shop', 'Bill #', 'Amount', 'Paid', 'Bill date', 'Due date', 'Status', 'Actions'].map(h => (
                 <th key={h} className="th">{h}</th>
               ))}
@@ -47,8 +47,8 @@ export default function BillsTable({
               return (
                 <Fragment key={b.id}>
                   <tr className="transition-colors"
-                    style={{ borderBottom: '1px solid #F0EDE4' }}
-                    onMouseEnter={e => (e.currentTarget.style.background = '#FBF9F2')}
+                    style={{ borderBottom: '1px solid #f7f8fc' }}
+                    onMouseEnter={e => (e.currentTarget.style.background = '#fafbff')}
                     onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
 
                     {/* Shop */}
@@ -56,21 +56,21 @@ export default function BillsTable({
                       <div className="flex items-center gap-2">
                         <ShopAvatar shop={b.shop as any} />
                         <div>
-                          <p className="text-xs font-medium" style={{ color: '#17140F' }}>{b.shop?.shopName}</p>
-                          <p className="text-xs" style={{ color: '#A39D8A' }}>{b.shop?.ownerName}</p>
+                          <p className="text-xs font-medium" style={{ color: '#1f2937' }}>{b.shop?.shopName}</p>
+                          <p className="text-xs" style={{ color: '#9ca3af' }}>{b.shop?.ownerName}</p>
                         </div>
                       </div>
                     </td>
 
                     {/* Bill # */}
                     <td className="td">
-                      <p className="text-xs font-mono" style={{ color: '#3A362E' }}>{b.billNumber}</p>
-                      {b.invoiceNumber && <p className="text-xs" style={{ color: '#A39D8A' }}>{b.invoiceNumber}</p>}
+                      <p className="text-xs font-mono" style={{ color: '#374151' }}>{b.billNumber}</p>
+                      {b.invoiceNumber && <p className="text-xs" style={{ color: '#9ca3af' }}>{b.invoiceNumber}</p>}
                     </td>
 
                     {/* Amount */}
                     <td className="td">
-                      <span className="text-sm font-semibold" style={{ color: '#17140F' }}>
+                      <span className="text-sm font-semibold" style={{ color: '#1f2937' }}>
                         {fmtAmount(b.amount)}
                       </span>
                     </td>
@@ -78,20 +78,20 @@ export default function BillsTable({
                     {/* Paid */}
                     <td className="td">
                       <p className="text-xs font-semibold" style={{ color: '#059669' }}>{fmtAmount(b.paidAmount)}</p>
-                      <p className="text-xs" style={{ color: '#A39D8A' }}>left: {fmtAmount(b.pendingAmount)}</p>
+                      <p className="text-xs" style={{ color: '#9ca3af' }}>left: {fmtAmount(b.pendingAmount)}</p>
                     </td>
 
                     {/* Bill Date */}
                     <td className="td">
-                      <p className="text-xs" style={{ color: '#3A362E' }}>{fmtDate(b.billDate)}</p>
+                      <p className="text-xs" style={{ color: '#374151' }}>{fmtDate(b.billDate)}</p>
                     </td>
 
                     {/* Due date */}
                     <td className="td">
-                      <p className="text-xs" style={{ color: '#3A362E' }}>{fmtDate(b.dueDate)}</p>
+                      <p className="text-xs" style={{ color: '#374151' }}>{fmtDate(b.dueDate)}</p>
                       {b.status !== 'PAID' && (
                         <p className="text-xs mt-0.5 font-medium"
-                          style={{ color: dl < 0 ? '#dc2626' : dl <= 3 ? '#d97706' : '#A39D8A' }}>
+                          style={{ color: dl < 0 ? '#dc2626' : dl <= 3 ? '#d97706' : '#9ca3af' }}>
                           {dl < 0 ? `${Math.abs(dl)}d overdue` : dl === 0 ? 'Today!' : `in ${dl}d`}
                         </p>
                       )}
@@ -116,7 +116,7 @@ export default function BillsTable({
                         <button
                           className="btn btn-sm"
                           title="View details"
-                          style={{ color: '#17140F', borderColor: '#e0e0ff' }}
+                          style={{ color: '#6366f1', borderColor: '#e0e0ff' }}
                           onMouseEnter={e => { e.currentTarget.style.background = '#eef2ff' }}
                           onMouseLeave={e => { e.currentTarget.style.background = '' }}
                           onClick={() => onView(b)}>
@@ -127,7 +127,7 @@ export default function BillsTable({
                         <button
                           className="btn btn-sm"
                           title="Edit bill"
-                          style={{ color: '#17140F', borderColor: '#e0e0ff' }}
+                          style={{ color: '#6366f1', borderColor: '#e0e0ff' }}
                           onMouseEnter={e => { e.currentTarget.style.background = '#eef2ff' }}
                           onMouseLeave={e => { e.currentTarget.style.background = '' }}
                           onClick={() => onEdit(b)}>
@@ -153,9 +153,9 @@ export default function BillsTable({
                           }}>WA</button>
                         )}
 
-                        <button className="btn btn-sm" style={{ color: '#A39D8A' }}
+                        <button className="btn btn-sm" style={{ color: '#9ca3af' }}
                           onMouseEnter={e => { e.currentTarget.style.color = '#dc2626'; e.currentTarget.style.borderColor = '#fca5a5' }}
-                          onMouseLeave={e => { e.currentTarget.style.color = '#A39D8A'; e.currentTarget.style.borderColor = '#e2e5f0' }}
+                          onMouseLeave={e => { e.currentTarget.style.color = '#9ca3af'; e.currentTarget.style.borderColor = '#e2e5f0' }}
                           onClick={() => onDelete(b.id)}>
                           <Trash2 size={12} />
                         </button>
@@ -185,10 +185,10 @@ export default function BillsTable({
         <div className="py-16 text-center">
           <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3"
             style={{ background: '#f3f4f6' }}>
-            <FileText size={22} style={{ color: '#A39D8A' }} />
+            <FileText size={22} style={{ color: '#9ca3af' }} />
           </div>
-          <p className="text-sm font-medium" style={{ color: '#3A362E' }}>No bills found</p>
-          <p className="text-xs mt-1" style={{ color: '#A39D8A' }}>Try changing filters or add a new bill</p>
+          <p className="text-sm font-medium" style={{ color: '#374151' }}>No bills found</p>
+          <p className="text-xs mt-1" style={{ color: '#9ca3af' }}>Try changing filters or add a new bill</p>
         </div>
       )}
     </div>

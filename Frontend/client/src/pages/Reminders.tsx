@@ -73,9 +73,9 @@ export default function Reminders() {
     const isOver = dl < 0
     const isUrgent = !isOver && dl <= 3
 
-    const accent = isOver ? '#dc2626' : isUrgent ? '#d97706' : '#17140F'
-    const bgColor = isOver ? '#fff1f2' : isUrgent ? '#fffbeb' : '#FBF9F2'
-    const borderColor = isOver ? '#fca5a5' : isUrgent ? '#fcd34d' : '#E7E1D3'
+    const accent = isOver ? '#dc2626' : isUrgent ? '#d97706' : '#6366f1'
+    const bgColor = isOver ? '#fff1f2' : isUrgent ? '#fffbeb' : '#fafbff'
+    const borderColor = isOver ? '#fca5a5' : isUrgent ? '#fcd34d' : '#e8eaf2'
 
     return (
       <div
@@ -89,10 +89,10 @@ export default function Reminders() {
       >
         <ShopAvatar shop={b.shop as any} />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold truncate" style={{ color: '#17140F' }}>
+          <p className="text-sm font-semibold truncate" style={{ color: '#1f2937' }}>
             {b.shop?.shopName}
           </p>
-          <p className="text-xs mt-0.5" style={{ color: '#7A7566' }}>
+          <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>
             {b.billNumber} · {fmtAmount(b.pendingAmount)}
             {' · '}
             <span style={{ color: accent, fontWeight: 500 }}>
@@ -122,7 +122,7 @@ export default function Reminders() {
 
   if (loading) return (
     <div className="flex justify-center py-20">
-      <Loader2 className="animate-spin" style={{ color: '#17140F' }} size={24} />
+      <Loader2 className="animate-spin" style={{ color: '#6366f1' }} size={24} />
     </div>
   )
 
@@ -151,8 +151,8 @@ export default function Reminders() {
       {/* Header + Staff Number Setting */}
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
-          <h1 className="text-lg font-bold" style={{ color: '#17140F' }}>Reminders</h1>
-          <p className="text-xs mt-0.5" style={{ color: '#7A7566' }}>
+          <h1 className="text-lg font-bold" style={{ color: '#0f1535' }}>Reminders</h1>
+          <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>
             {overdue.length + soon.length + later.length} bills need attention
           </p>
         </div>
@@ -176,15 +176,15 @@ export default function Reminders() {
       {showNumberInput && (
         <div 
           className="rounded-xl p-4 space-y-3"
-          style={{ background: '#FBF9F2', border: '1px solid #E7E1D3' }}
+          style={{ background: '#fafbff', border: '1px solid #e8eaf2' }}
         >
           <div className="flex items-center gap-2">
-            <Phone size={16} style={{ color: '#17140F' }} />
-            <p className="text-sm font-medium" style={{ color: '#17140F' }}>
+            <Phone size={16} style={{ color: '#6366f1' }} />
+            <p className="text-sm font-medium" style={{ color: '#1f2937' }}>
               Enter Staff WhatsApp Number
             </p>
           </div>
-          <p className="text-xs" style={{ color: '#7A7566' }}>
+          <p className="text-xs" style={{ color: '#6b7280' }}>
             All reminders will be sent to this number instead of shop owners.
           </p>
           <div className="flex gap-2">
@@ -226,7 +226,7 @@ export default function Reminders() {
       )}
       {later.length > 0 && (
         <Section title="Upcoming" icon={<Calendar size={15} />}
-          color="#17140F" bg="#F0EDE4" items={later} />
+          color="#6366f1" bg="#ede9fe" items={later} />
       )}
 
       {overdue.length === 0 && soon.length === 0 && later.length === 0 && (
@@ -234,8 +234,8 @@ export default function Reminders() {
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: '#d1fae5' }}>
             <CheckCircle2 size={28} style={{ color: '#059669' }} />
           </div>
-          <p className="text-sm font-semibold" style={{ color: '#17140F' }}>All clear!</p>
-          <p className="text-xs" style={{ color: '#A39D8A' }}>No pending bills right now 🎉</p>
+          <p className="text-sm font-semibold" style={{ color: '#1f2937' }}>All clear!</p>
+          <p className="text-xs" style={{ color: '#9ca3af' }}>No pending bills right now 🎉</p>
         </div>
       )}
     </div>

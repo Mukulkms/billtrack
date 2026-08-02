@@ -75,8 +75,8 @@ export default function Shops() {
 
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h1 className="text-lg font-bold" style={{ color: '#17140F' }}>Shops</h1>
-          <p className="text-xs mt-0.5" style={{ color: '#7A7566' }}>
+          <h1 className="text-lg font-bold" style={{ color: '#0f1535' }}>Shops</h1>
+          <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>
             {summary.total} shops · ₹{summary.totalDue.toLocaleString('en-IN')} total due
           </p>
         </div>
@@ -88,7 +88,7 @@ export default function Shops() {
       {!loading && shopsWithStats.length > 0 && (
         <div className="flex gap-2 flex-wrap">
           {[
-            { label: `${summary.total} Total`,                   bg: '#f3f4f6', color: '#3A362E', border: '#e5e7eb' },
+            { label: `${summary.total} Total`,                   bg: '#f3f4f6', color: '#374151', border: '#e5e7eb' },
             { label: `${summary.overdue} Overdue`,               bg: '#fff1f2', color: '#dc2626', border: '#fca5a5' },
             { label: `${summary.pending} Pending`,               bg: '#fef3c7', color: '#d97706', border: '#fcd34d' },
             { label: `${summary.total - summary.pending} Clear`, bg: '#f0fdf4', color: '#16a34a', border: '#bbf7d0' },
@@ -107,7 +107,7 @@ export default function Shops() {
         </select>
 
         <div className="relative flex-1 min-w-[180px] max-w-xs">
-          <Search size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#A39D8A', pointerEvents: 'none' }} />
+          <Search size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#9ca3af', pointerEvents: 'none' }} />
           <input
             className="input w-full"
             style={{ paddingLeft: 30, paddingRight: search ? 30 : 12, fontSize: 13 }}
@@ -116,7 +116,7 @@ export default function Shops() {
             onChange={e => setSearch(e.target.value)}
           />
           {search && (
-            <button onClick={() => setSearch('')} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: '#A39D8A' }}>
+            <button onClick={() => setSearch('')} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }}>
               <X size={13} />
             </button>
           )}
@@ -125,7 +125,7 @@ export default function Shops() {
         <div className="flex gap-1.5 flex-wrap">
           {FILTER_OPTIONS.map(f => (
             <button key={f.value} className="btn btn-sm"
-              style={filter === f.value ? { background: '#17140F', borderColor: '#17140F', color: '#fff' } : { color: '#3A362E' }}
+              style={filter === f.value ? { background: '#6366f1', borderColor: '#6366f1', color: '#fff' } : { color: '#374151' }}
               onClick={() => setFilter(f.value)}>
               {f.label}
             </button>
@@ -140,23 +140,23 @@ export default function Shops() {
       </div>
 
       {!loading && search && (
-        <p className="text-xs" style={{ color: '#7A7566' }}>
+        <p className="text-xs" style={{ color: '#6b7280' }}>
           {filtered.length} result{filtered.length !== 1 ? 's' : ''} for "{search}"
         </p>
       )}
 
       {loading ? (
         <div className="flex justify-center py-20">
-          <Loader2 className="animate-spin" style={{ color: '#17140F' }} size={24} />
+          <Loader2 className="animate-spin" style={{ color: '#6366f1' }} size={24} />
         </div>
 
       ) : filtered.length === 0 ? (
-        <div className="rounded-2xl py-20 text-center" style={{ background: '#ffffff', border: '1px solid #E7E1D3' }}>
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: '#F0EDE4' }}>
-            <Store size={24} style={{ color: '#17140F' }} />
+        <div className="rounded-2xl py-20 text-center" style={{ background: '#ffffff', border: '1px solid #e8eaf2' }}>
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: '#ede9fe' }}>
+            <Store size={24} style={{ color: '#7c3aed' }} />
           </div>
-          <p className="text-sm font-semibold" style={{ color: '#17140F' }}>No shops found</p>
-          <p className="text-xs mt-1 mb-4" style={{ color: '#A39D8A' }}>
+          <p className="text-sm font-semibold" style={{ color: '#1f2937' }}>No shops found</p>
+          <p className="text-xs mt-1 mb-4" style={{ color: '#9ca3af' }}>
             {search ? 'Try different search or clear filters' : 'Add your first shop to get started'}
           </p>
           {search

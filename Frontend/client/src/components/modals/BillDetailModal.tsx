@@ -12,9 +12,9 @@ interface Props {
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex justify-between items-start py-2.5"
-      style={{ borderBottom: '1px solid #EFEADC' }}>
-      <span className="text-xs" style={{ color: '#A39D8A' }}>{label}</span>
-      <span className="text-xs font-medium text-right" style={{ color: '#17140F', maxWidth: '60%' }}>{value}</span>
+      style={{ borderBottom: '1px solid #f0f1f8' }}>
+      <span className="text-xs" style={{ color: '#9ca3af' }}>{label}</span>
+      <span className="text-xs font-medium text-right" style={{ color: '#1f2937', maxWidth: '60%' }}>{value}</span>
     </div>
   )
 }
@@ -39,19 +39,19 @@ export default function BillDetailModal({ bill, onClose }: Props) {
         }}>
 
         <div className="flex items-center justify-between px-5 py-4"
-          style={{ borderBottom: '1px solid #EFEADC' }}>
+          style={{ borderBottom: '1px solid #f0f1f8' }}>
           <div className="flex items-center gap-2">
-            <FileText size={16} style={{ color: '#17140F' }} />
-            <span className="font-semibold text-sm" style={{ color: '#17140F' }}>
+            <FileText size={16} style={{ color: '#6366f1' }} />
+            <span className="font-semibold text-sm" style={{ color: '#0f1535' }}>
               Bill Detail
             </span>
             <span className="text-xs font-mono px-2 py-0.5 rounded"
-              style={{ background: '#f3f4f6', color: '#3A362E' }}>
+              style={{ background: '#f3f4f6', color: '#374151' }}>
               {bill.billNumber}
             </span>
           </div>
           <button onClick={onClose} className="btn btn-sm"
-            style={{ padding: '4px', color: '#A39D8A' }}>
+            style={{ padding: '4px', color: '#9ca3af' }}>
             <X size={15} />
           </button>
         </div>
@@ -60,17 +60,17 @@ export default function BillDetailModal({ bill, onClose }: Props) {
 
           <section>
             <div className="flex items-center gap-1.5 mb-3">
-              <Building2 size={13} style={{ color: '#17140F' }} />
-              <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#17140F' }}>Shop</span>
+              <Building2 size={13} style={{ color: '#6366f1' }} />
+              <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#6366f1' }}>Shop</span>
             </div>
             <div className="flex items-center gap-3 p-3 rounded-xl"
-              style={{ background: '#f8f9ff', border: '1px solid #E7E1D3' }}>
+              style={{ background: '#f8f9ff', border: '1px solid #e8eaf2' }}>
               <ShopAvatar shop={bill.shop as any} />
               <div>
-                <p className="text-sm font-semibold" style={{ color: '#17140F' }}>{bill.shop?.shopName}</p>
-                <p className="text-xs mt-0.5" style={{ color: '#7A7566' }}>{bill.shop?.ownerName}</p>
+                <p className="text-sm font-semibold" style={{ color: '#1f2937' }}>{bill.shop?.shopName}</p>
+                <p className="text-xs mt-0.5" style={{ color: '#6b7280' }}>{bill.shop?.ownerName}</p>
                 {bill.shop?.phone && (
-                  <p className="text-xs mt-0.5" style={{ color: '#A39D8A' }}>{bill.shop?.phone}</p>
+                  <p className="text-xs mt-0.5" style={{ color: '#9ca3af' }}>{bill.shop?.phone}</p>
                 )}
               </div>
             </div>
@@ -78,11 +78,11 @@ export default function BillDetailModal({ bill, onClose }: Props) {
 
           <section>
             <div className="flex items-center gap-1.5 mb-3">
-              <Hash size={13} style={{ color: '#17140F' }} />
-              <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#17140F' }}>Bill Info</span>
+              <Hash size={13} style={{ color: '#6366f1' }} />
+              <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#6366f1' }}>Bill Info</span>
             </div>
             <div className="rounded-xl overflow-hidden"
-              style={{ border: '1px solid #E7E1D3' }}>
+              style={{ border: '1px solid #e8eaf2' }}>
               <div className="px-4">
                 <InfoRow label="Bill Number" value={bill.billNumber} />
                 {bill.invoiceNumber && <InfoRow label="Invoice Number" value={bill.invoiceNumber} />}
@@ -108,18 +108,18 @@ export default function BillDetailModal({ bill, onClose }: Props) {
 
           <section>
             <div className="flex items-center gap-1.5 mb-3">
-              <CreditCard size={13} style={{ color: '#17140F' }} />
-              <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#17140F' }}>Payment</span>
+              <CreditCard size={13} style={{ color: '#6366f1' }} />
+              <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#6366f1' }}>Payment</span>
             </div>
             <div className="grid grid-cols-3 gap-2 mb-3">
               {[
-                { label: 'Total', value: fmtAmount(bill.amount), color: '#17140F', bg: '#f8f9ff' },
+                { label: 'Total', value: fmtAmount(bill.amount), color: '#1f2937', bg: '#f8f9ff' },
                 { label: 'Paid', value: fmtAmount(bill.paidAmount), color: '#059669', bg: '#f0fdf4' },
                 { label: 'Pending', value: fmtAmount(bill.pendingAmount), color: bill.pendingAmount > 0 ? '#dc2626' : '#059669', bg: bill.pendingAmount > 0 ? '#fef2f2' : '#f0fdf4' },
               ].map(({ label, value, color, bg }) => (
                 <div key={label} className="rounded-xl p-3 text-center"
-                  style={{ background: bg, border: '1px solid #E7E1D3' }}>
-                  <p className="text-xs" style={{ color: '#A39D8A' }}>{label}</p>
+                  style={{ background: bg, border: '1px solid #e8eaf2' }}>
+                  <p className="text-xs" style={{ color: '#9ca3af' }}>{label}</p>
                   <p className="text-sm font-bold mt-1" style={{ color }}>{value}</p>
                 </div>
               ))}
@@ -129,8 +129,8 @@ export default function BillDetailModal({ bill, onClose }: Props) {
           {(bill.payments?.length || 0) > 0 && (
             <section>
               <div className="flex items-center gap-1.5 mb-3">
-                <Calendar size={13} style={{ color: '#17140F' }} />
-                <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#17140F' }}>
+                <Calendar size={13} style={{ color: '#6366f1' }} />
+                <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#6366f1' }}>
                   Payment History ({bill.payments!.length})
                 </span>
               </div>
@@ -147,12 +147,12 @@ export default function BillDetailModal({ bill, onClose }: Props) {
                         <p className="text-xs font-semibold" style={{ color: '#059669' }}>
                           {fmtAmount(p.amount)}
                         </p>
-                        {p.note && <p className="text-xs" style={{ color: '#7A7566' }}>{p.note}</p>}
+                        {p.note && <p className="text-xs" style={{ color: '#6b7280' }}>{p.note}</p>}
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs" style={{ color: '#3A362E' }}>{fmtDate(p.receivedAt)}</p>
-                      <p className="text-xs" style={{ color: '#A39D8A' }}>
+                      <p className="text-xs" style={{ color: '#374151' }}>{fmtDate(p.receivedAt)}</p>
+                      <p className="text-xs" style={{ color: '#9ca3af' }}>
                         {p.mode}{p.receivedBy?.name ? ` · ${p.receivedBy.name}` : ''}
                       </p>
                     </div>
@@ -164,7 +164,7 @@ export default function BillDetailModal({ bill, onClose }: Props) {
         </div>
 
         <div className="px-5 py-3 flex justify-end"
-          style={{ borderTop: '1px solid #EFEADC' }}>
+          style={{ borderTop: '1px solid #f0f1f8' }}>
           <button className="btn btn-sm" onClick={onClose}>Close</button>
         </div>
       </div>
