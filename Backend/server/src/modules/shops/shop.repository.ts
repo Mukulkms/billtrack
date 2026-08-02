@@ -45,10 +45,21 @@ export const getShopsRepo = (page: number, limit: number, search: string) => {
     orderBy: { createdAt: "desc" },
   });
 };
+const SHOP_UPDATABLE_FIELDS = [
+  "shopName", "ownerName", "phone", "whatsapp", "email", "gstNumber",
+  "address", "city", "state", "pincode", "paymentTerm", "creditLimit",
+  "openingBalance", "notes", "isActive",
+] as const;
+
 export const updateShopRepo = (id: string, data: any) => {
+  const cleanData: Record<string, any> = {};
+  for (const field of SHOP_UPDATABLE_FIELDS) {
+    if (data[field] !== undefined) cleanData[field] = data[field];
+  }
+
   return prisma.shop.update({
     where: { id },
-    data,
+    data: cleanData,
   });
 };
 
