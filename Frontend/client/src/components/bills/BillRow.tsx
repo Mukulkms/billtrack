@@ -25,18 +25,18 @@ export default function BillRow({ bill: b, expanded, onTogglePayments, onPay, on
     <Fragment>
       <tr className="table-row-hover transition-colors" style={{ borderBottom: '1px solid var(--color-border-soft)' }}>
         <td className="td">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <ShopAvatar shop={b.shop as any} />
-            <div>
-              <p className="text-xs font-medium text-slate-800">{b.shop?.shopName}</p>
-              <p className="text-xs text-slate-400">{b.shop?.ownerName}</p>
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-slate-800 truncate">{b.shop?.shopName}</p>
+              <p className="text-xs text-slate-400 truncate">{b.shop?.ownerName}</p>
             </div>
           </div>
         </td>
 
         <td className="td">
           <p className="text-xs font-mono text-slate-600">{b.billNumber}</p>
-          {b.invoiceNumber && <p className="text-xs text-slate-400">{b.invoiceNumber}</p>}
+          {b.invoiceNumber && <p className="text-xs text-slate-400 mt-0.5">{b.invoiceNumber}</p>}
         </td>
 
         <td className="td">
@@ -45,7 +45,7 @@ export default function BillRow({ bill: b, expanded, onTogglePayments, onPay, on
 
         <td className="td">
           <p className="text-xs font-semibold text-status-success">{fmtAmount(b.paidAmount)}</p>
-          <p className="text-xs text-slate-400">left: {fmtAmount(b.pendingAmount)}</p>
+          <p className="text-xs text-slate-400 mt-0.5">left: {fmtAmount(b.pendingAmount)}</p>
         </td>
 
         <td className="td">
@@ -55,8 +55,8 @@ export default function BillRow({ bill: b, expanded, onTogglePayments, onPay, on
         <td className="td">
           <p className="text-xs text-slate-600">{fmtDate(b.dueDate)}</p>
           {b.status !== 'PAID' && (
-            <p className={`text-xs mt-0.5 font-medium ${isOverdue ? 'text-status-danger' : isUrgent ? 'text-status-warning' : 'text-slate-400'}`}>
-              {dl < 0 ? `${Math.abs(dl)}d overdue` : dl === 0 ? 'Today!' : `in ${dl}d`}
+            <p className={`text-xs mt-1 font-medium ${isOverdue ? 'text-status-danger' : isUrgent ? 'text-status-warning' : 'text-slate-400'}`}>
+              {dl < 0 ? `${Math.abs(dl)}d overdue` : dl === 0 ? 'Due today' : `in ${dl}d`}
             </p>
           )}
         </td>
@@ -66,28 +66,15 @@ export default function BillRow({ bill: b, expanded, onTogglePayments, onPay, on
         </td>
 
         <td className="td">
-          <div className="flex gap-1.5 items-center">
-            <button className="btn btn-sm btn-ghost-primary" title="View details" onClick={() => onView(b)}>
-              <Eye size={12} />
-            </button>
-
-            <button className="btn btn-sm btn-ghost-primary" title="Edit bill" onClick={() => onEdit(b)}>
-              <Pencil size={12} />
-            </button>
-
+          <div className="flex gap-2 items-center flex-wrap">
             {b.status !== 'PAID' && (
               <button className="btn btn-sm btn-success" onClick={() => onPay(b)}>Pay</button>
-            )}
-
-            {hasPayments && (
-              <button className="btn btn-sm" onClick={() => onTogglePayments(b.id)}>
-                {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-              </button>
             )}
 
             {b.shop?.whatsapp && b.status !== 'PAID' && (
               <button
                 className="wa-btn"
+                title="Send WhatsApp reminder"
                 onClick={() => {
                   const msg = encodeURIComponent(
                     `Namaste ${b.shop?.ownerName} ji 🙏\n\nBill: ${b.billNumber}\nAmount due: ${fmtAmount(b.pendingAmount)}\nDue date: ${fmtDate(b.dueDate)}\n\nKripaya jald payment karein. Shukriya!`
@@ -99,16 +86,29 @@ export default function BillRow({ bill: b, expanded, onTogglePayments, onPay, on
               </button>
             )}
 
-            <button className="btn btn-sm btn-ghost-danger" onClick={() => onDelete(b.id)}>
-              <Trash2 size={12} />
-            </button>
+            <div className="action-group">
+              <button className="action-item primary" title="View details" onClick={() => onView(b)}>
+                <Eye size={13} />
+              </button>
+              <button className="action-item primary" title="Edit bill" onClick={() => onEdit(b)}>
+                <Pencil size={13} />
+              </button>
+              {hasPayments && (
+                <button className="action-item" title={expanded ? 'Hide payments' : 'Show payments'} onClick={() => onTogglePayments(b.id)}>
+                  {expanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                </button>
+              )}
+              <button className="action-item danger" title="Delete bill" onClick={() => onDelete(b.id)}>
+                <Trash2 size={13} />
+              </button>
+            </div>
           </div>
         </td>
       </tr>
 
       {expanded && hasPayments && b.payments?.map(p => (
         <tr key={p.id} className="status-card-success" style={{ borderBottom: '1px solid var(--color-success-border)' }}>
-          <td colSpan={8} className="px-6 py-2">
+          <td colSpan={8} className="px-5 py-2.5">
             <span className="text-xs text-status-success">
               ✓ {fmtAmount(p.amount)} · {p.mode} · {fmtDate(p.receivedAt)} · {p.receivedBy?.name}
               {p.note ? ` · ${p.note}` : ''}

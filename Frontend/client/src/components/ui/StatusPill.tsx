@@ -4,5 +4,10 @@ import clsx from 'clsx'
 
 const LABELS: Record<BillStatus, string> = { PENDING: 'Pending', PARTIAL: 'Partial', PAID: 'Paid', OVERDUE: 'Overdue' }
 export default function StatusPill({ status }: { status: BillStatus }) {
-  return <span className={clsx('pill', statusColor[status])}>{LABELS[status]}</span>
+  return (
+    <span className={clsx('pill', statusColor[status])}>
+      <span className="pill-dot" />
+      {LABELS[status]}
+    </span>
+  )
 }

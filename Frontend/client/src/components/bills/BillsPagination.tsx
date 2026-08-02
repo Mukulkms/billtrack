@@ -19,9 +19,9 @@ export default function BillsPagination({ page, totalPages, totalCount, pageSize
   if (totalPages <= 1) return null
 
   return (
-    <div className="flex items-center justify-between pt-2">
+    <div className="filter-bar flex items-center justify-between flex-wrap gap-3">
       <p className="text-xs text-slate-500">
-        Showing {(page - 1) * pageSize + 1} - {Math.min(page * pageSize, totalCount)} of {totalCount}
+        Showing <span className="font-medium text-slate-700">{(page - 1) * pageSize + 1}–{Math.min(page * pageSize, totalCount)}</span> of {totalCount}
       </p>
 
       <div className="flex items-center gap-1">

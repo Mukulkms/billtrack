@@ -75,9 +75,39 @@
   .card {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    @apply rounded-xl;
+    @apply rounded-2xl;
     box-shadow: 0 1px 4px rgba(15,21,53,0.06);
   }
+
+  
+  .filter-bar {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    @apply rounded-2xl p-3;
+    box-shadow: 0 1px 4px rgba(15,21,53,0.05);
+  }
+
+  
+  .segmented { @apply inline-flex items-center gap-0.5 p-1 rounded-xl flex-wrap; background: #f2f3f9; }
+  .segmented-item {
+    @apply px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap;
+    color: var(--color-text-muted);
+  }
+  .segmented-item:hover { color: var(--color-text-soft); }
+  .segmented-item.active { background: var(--color-surface); color: var(--color-primary); box-shadow: 0 1px 3px rgba(15,21,53,0.12); }
+
+  
+  .action-group { @apply inline-flex items-center rounded-lg overflow-hidden; border: 1px solid var(--color-border); }
+  .action-group > .action-item {
+    @apply flex items-center justify-center w-8 h-8 transition-colors cursor-pointer;
+    color: var(--color-text-muted);
+    border-right: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+  .action-group > .action-item:last-child { border-right: none; }
+  .action-group > .action-item:hover { background: #f5f6fb; color: var(--color-text-soft); }
+  .action-group > .action-item.danger:hover { background: var(--color-danger-bg); color: var(--color-danger); }
+  .action-group > .action-item.primary:hover { background: var(--color-primary-soft); color: var(--color-primary); }
 
   
   .status-card { @apply rounded-xl p-4 transition-all; border: 1px solid var(--color-border); box-shadow: 0 1px 3px rgba(15,21,53,0.05); }
@@ -105,11 +135,16 @@
   .label { @apply block text-xs font-medium mb-1.5; color: var(--color-text-muted); }
 
   
-  .pill { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold; }
+  .pill { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold; }
+  .pill-dot { @apply w-1.5 h-1.5 rounded-full flex-shrink-0; }
   .pill-overdue { background: var(--color-danger-soft); color: #b91c1c; border: 1px solid var(--color-danger-border); }
+  .pill-overdue .pill-dot { background: #b91c1c; }
   .pill-pending { background: var(--color-info-soft); color: #5b21b6; border: 1px solid var(--color-info-border); }
+  .pill-pending .pill-dot { background: #5b21b6; }
   .pill-partial  { background: var(--color-warning-soft); color: #92400e; border: 1px solid var(--color-warning-border); }
+  .pill-partial .pill-dot { background: #92400e; }
   .pill-paid    { background: var(--color-success-soft); color: #065f46; border: 1px solid var(--color-success-border); }
+  .pill-paid .pill-dot { background: #065f46; }
 
   
   .nav-item { @apply flex items-center gap-3 px-3 py-2.5 text-sm rounded-xl mx-0 transition-all; color: #9ca3af; }
@@ -117,8 +152,8 @@
   .nav-item.active { background: linear-gradient(135deg, #1e2b6e, #1a2560); color: #a5b4fc; @apply font-semibold; }
 
   
-  .th { @apply text-xs font-semibold uppercase tracking-wider px-4 py-3 text-left; color: var(--color-text-muted); background: #f7f8fc; }
-  .td { @apply px-4 py-3 text-sm; border-bottom: 1px solid var(--color-border-soft); }
+  .th { @apply text-xs font-semibold uppercase tracking-wider px-5 py-3.5 text-left; color: var(--color-text-muted); background: #f7f8fc; }
+  .td { @apply px-5 py-4 text-sm align-top; border-bottom: 1px solid var(--color-border-soft); }
   .table-row-hover:hover { background: #fafbff; }
 
   

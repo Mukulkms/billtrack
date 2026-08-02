@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Plus } from 'lucide-react'
+import { Plus, Receipt } from 'lucide-react'
 import { useBills } from '../hooks/useBills'
 import BillsFilters from '../components/bills/BillsFilters'
 import BillsTable from '../components/bills/BillsTable'
@@ -25,22 +25,30 @@ export default function Bills() {
   const [editBill, setEditBill] = useState<Bill | null>(null)
 
   return (
-    <div className="p-4 md:p-6 space-y-4">
+    <div className="p-4 md:p-8 space-y-6 max-w-[1400px] mx-auto">
       {payBill && <PayModal bill={payBill} onClose={() => { setPayBill(null); load() }} />}
       {showAdd && <AddBillModal shops={shops} onClose={() => { setShowAdd(false); load() }} />}
       {editBill && <AddBillModal shops={shops} bill={editBill} onClose={() => { setEditBill(null); load() }} />}
       {viewBill && <BillDetailModal bill={viewBill} onClose={() => setViewBill(null)} />}
 
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div>
-          <h1 className="text-lg font-bold text-slate-900">Bills</h1>
-          <p className="text-xs mt-0.5 text-slate-500">
-            {totalCount} bill{totalCount !== 1 ? 's' : ''} found
-            {totalPages > 1 && ` · Page ${page} of ${totalPages}`}
-          </p>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-3">
+          <div
+            className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
+            style={{ background: 'var(--color-primary-soft)', border: '1px solid var(--color-primary-border)' }}
+          >
+            <Receipt size={20} style={{ color: 'var(--color-primary)' }} />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">Bills</h1>
+            <p className="text-xs mt-0.5 text-slate-500">
+              {totalCount} bill{totalCount !== 1 ? 's' : ''} found
+              {totalPages > 1 && ` · Page ${page} of ${totalPages}`}
+            </p>
+          </div>
         </div>
-        <button className="btn btn-primary btn-sm flex-shrink-0" onClick={() => setShowAdd(true)}>
-          <Plus size={14} /> Add bill
+        <button className="btn btn-primary flex-shrink-0" onClick={() => setShowAdd(true)}>
+          <Plus size={16} /> Add bill
         </button>
       </div>
 
@@ -66,6 +74,7 @@ export default function Bills() {
         onDelete={handleDelete}
         onView={setViewBill}
         onEdit={setEditBill}
+        onAddBill={() => setShowAdd(true)}
       />
 
       {!loading && (
