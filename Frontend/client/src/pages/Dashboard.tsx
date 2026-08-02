@@ -15,11 +15,10 @@ import { fmtAmount, fmtDate, daysLeft } from "../utils/helpers";
 import StatusPill from "../components/ui/StatusPill";
 import ShopAvatar from "../components/ui/ShopAvatar";
 import AddBillModal from "../components/modals/AddBillModal";
+import AIInsights from "../components/dashboard/AIInsights";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
 
-// Palette used across the stat cards / health bar / category bars, kept in
-// one place so every "amount" visual on the dashboard reads consistently.
 const C = {
   violet: "#7c3aed",
   green: "#059669",
@@ -60,8 +59,6 @@ export default function Dashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  // ── Loading skeleton — replaces the old blank spinner so the page
-  // has visible structure the instant it starts rendering ──
   if (loading) {
     return (
       <div className="p-4 md:p-6 space-y-5">
@@ -123,9 +120,6 @@ export default function Dashboard() {
     },
   ];
 
-  // ── Signature element: a single "receivables health" bar showing what
-  // share of everything ever billed has actually been collected. Built
-  // entirely from real dashboard numbers — no invented data. ──
   const totalBilled = stats.totalCollected + stats.totalOutstanding;
   const collectionRate = totalBilled > 0 ? (stats.totalCollected / totalBilled) * 100 : 0;
 
@@ -142,7 +136,6 @@ export default function Dashboard() {
         />
       )}
 
-      {/* Header */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <p className="eyebrow mb-0.5">{greeting()}{user?.name ? `, ${user.name.split(" ")[0]}` : ""}</p>
@@ -166,7 +159,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Overdue alert — surfaced above everything else since it needs action */}
       {stats.overdueCount > 0 && (
         <div
           className="rounded-xl p-3.5 flex items-center gap-3 flex-wrap"
@@ -185,7 +177,6 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Stat cards — left accent bar + tabular numerals for scannable amounts */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {statCards.map((s, i) => (
           <div key={i} className="stat-card" style={{ borderLeft: `3px solid ${s.iconColor}` }}>
@@ -206,7 +197,8 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Receivables health — at-a-glance collected vs outstanding */}
+      <AIInsights />
+
       <div className="card p-4">
         <div className="flex items-center justify-between mb-2.5">
           <div className="flex items-center gap-2">
@@ -234,8 +226,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Recent bills + Category spend side-by-side on desktop — uses the
-          horizontal space instead of stacking everything in one column */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-3">
@@ -304,7 +294,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Category spend — proportional bars instead of a plain list */}
         {stats.categoryTotals?.length > 0 && (
           <div>
             <h2 className="text-sm font-semibold mb-3" style={{ color: "#0f1535" }}>Category-wise spend</h2>
@@ -329,7 +318,6 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* Weekly due */}
       {stats.weeklyDue.length > 0 && (
         <div>
           <h2 className="text-sm font-semibold mb-3" style={{ color: "#0f1535" }}>Due this week</h2>

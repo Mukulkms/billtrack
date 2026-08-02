@@ -24,7 +24,6 @@ export default function Login() {
       className="min-h-screen flex items-center justify-center p-4"
       style={{ background: '#0f1535' }}
     >
-      {/* Subtle radial glow behind card */}
       <div
         aria-hidden
         style={{
@@ -35,7 +34,6 @@ export default function Login() {
 
       <div className="w-full max-w-sm relative">
 
-        {/* Logo mark */}
         <div className="text-center mb-8">
           <div
             className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
@@ -57,7 +55,6 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Card */}
         <div
           className="rounded-2xl p-6"
           style={{
@@ -68,7 +65,6 @@ export default function Login() {
         >
           <form onSubmit={submit} className="space-y-4">
 
-            {/* Email */}
             <div>
               <label className="label" style={{ color: '#374151' }}>Email address</label>
               <div className="relative">
@@ -91,7 +87,6 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <label className="label" style={{ color: '#374151' }}>Password</label>
               <div className="relative">
@@ -115,7 +110,6 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Submit */}
             <button
               className="btn btn-lg w-full justify-center mt-2"
               type="submit"
@@ -139,7 +133,6 @@ export default function Login() {
           </form>
         </div>
 
-        {/* Footer */}
         <p className="text-center text-xs mt-6" style={{ color: '#4b5563' }}>
           BillTracker Pro · Stay Ahead, Get Paid
         </p>

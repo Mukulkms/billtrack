@@ -45,12 +45,10 @@ export default function AddBillModal({ shops: shopsProp, onClose, bill }: Props)
   const [newCategoryName, setNewCategoryName] = useState('')
   const [creatingCategory, setCreatingCategory] = useState(false)
 
-  // New shop inline
   const [showNewShop, setShowNewShop] = useState(false)
   const [newShopName, setNewShopName] = useState('')
   const [creatingShop, setCreatingShop] = useState(false)
 
-  // Shop autocomplete
   const [shopQuery, setShopQuery] = useState('')
   const [showShopDropdown, setShowShopDropdown] = useState(false)
   const shopBoxRef = useRef<HTMLDivElement>(null)
@@ -63,8 +61,6 @@ export default function AddBillModal({ shops: shopsProp, onClose, bill }: Props)
   const fileRef = useRef<HTMLInputElement>(null)
   const camRef = useRef<HTMLInputElement>(null)
 
-  // Always fetch fresh shops list (fixes stale/missing shopsProp bug)
-  // limit high rakha hai taaki pagination ki wajah se koi shop miss na ho
   useEffect(() => {
     getShopsApi(1, 1000).then(setShops).catch(() => {})
   }, [])
@@ -73,7 +69,6 @@ export default function AddBillModal({ shops: shopsProp, onClose, bill }: Props)
     getCategoriesApi().then(setCategories).catch(() => {})
   }, [])
 
-  // When shops load (or edit mode has a shopId), prefill the visible input text
   useEffect(() => {
     if (form.shopId) {
       const s = shops.find(s => s.id === form.shopId)
@@ -81,7 +76,6 @@ export default function AddBillModal({ shops: shopsProp, onClose, bill }: Props)
     }
   }, [shops])
 
-  // Close shop dropdown when clicking outside
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (shopBoxRef.current && !shopBoxRef.current.contains(e.target as Node)) {
@@ -124,7 +118,6 @@ export default function AddBillModal({ shops: shopsProp, onClose, bill }: Props)
           setShopQuery(match.shopName)
           setScanMsg('✓ Data extracted! Review and save.')
         } else {
-          // Auto show new shop form with scanned name
           setNewShopName(data.shopName)
           setShowNewShop(true)
           setShopQuery(data.shopName)
@@ -228,7 +221,6 @@ const handleCreateCategory = async () => {
 
         <div className="p-5 space-y-4">
 
-          {/* AI Scan — only for new bills */}
           {!isEdit && (
           <div className="rounded-xl p-4 space-y-3" style={{ background: '#fafbff', border: '1px solid #e8eaf2' }}>
             <p className="text-xs font-semibold" style={{ color: '#374151' }}>
@@ -282,7 +274,6 @@ const handleCreateCategory = async () => {
           </div>
           )}
 
-          {/* Divider */}
           {!isEdit && (
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px" style={{ background: '#f0f1f8' }} />
@@ -291,7 +282,6 @@ const handleCreateCategory = async () => {
           </div>
           )}
 
-          {/* Shop autocomplete + New shop inline */}
           <div ref={shopBoxRef} className="relative">
             <label className="label">Shop *</label>
             <input
@@ -350,7 +340,6 @@ const handleCreateCategory = async () => {
               </div>
             )}
 
-            {/* Inline new shop creator */}
             {showNewShop && (
               <div className="mt-2 rounded-xl p-3 space-y-2"
                 style={{ background: '#f5f3ff', border: '1px solid #c4b5fd' }}>

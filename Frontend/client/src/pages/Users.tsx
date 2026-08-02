@@ -24,17 +24,14 @@ export default function Users() {
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   
-  // Add User Modal
   const [showForm, setShowForm] = useState(false)
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', role: 'STAFF' })
   
-  // Edit User Modal
   const [showEdit, setShowEdit] = useState(false)
   const [editForm, setEditForm] = useState<User | null>(null)
   const [editSaving, setEditSaving] = useState(false)
   
-  // Reset Password Modal
   const [showReset, setShowReset] = useState(false)
   const [resetUserId, setResetUserId] = useState('')
   const [newPassword, setNewPassword] = useState('')
@@ -50,7 +47,6 @@ export default function Users() {
 
   useEffect(() => { load() }, [])
 
-  // ─── CREATE USER ───────────────────────────────
   const submit = async () => {
     if (!form.name || !form.email || !form.password) { toast.error('Fill required fields'); return }
     setSaving(true)
@@ -65,7 +61,6 @@ export default function Users() {
     } finally { setSaving(false) }
   }
 
-  // ─── DELETE USER ───────────────────────────────
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this user?')) return
     try {
@@ -77,7 +72,6 @@ export default function Users() {
     }
   }
 
-  // ─── EDIT USER ─────────────────────────────────
   const openEdit = (user: User) => {
     setEditForm(user)
     setShowEdit(true)
@@ -102,7 +96,6 @@ export default function Users() {
     } finally { setEditSaving(false) }
   }
 
-  // ─── RESET PASSWORD ────────────────────────────
   const openReset = (id: string) => {
     setResetUserId(id)
     setNewPassword('')
@@ -133,7 +126,6 @@ export default function Users() {
   return (
     <div className="p-4 md:p-6 space-y-5">
 
-      {/* Header */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-lg font-bold" style={{ color: '#0f1535' }}>Users</h1>
@@ -146,7 +138,6 @@ export default function Users() {
         </button>
       </div>
 
-      {/* Role summary pills */}
       {users.length > 0 && (
         <div className="flex gap-2 flex-wrap">
           {Object.entries(ROLE_CONFIG).map(([role, cfg]) => (
@@ -164,7 +155,6 @@ export default function Users() {
         </div>
       )}
 
-      {/* ─── ADD USER MODAL ───────────────────────── */}
       {showForm && (
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setShowForm(false)}>
           <div className="modal max-w-sm">
@@ -229,7 +219,6 @@ export default function Users() {
         </div>
       )}
 
-      {/* ─── EDIT USER MODAL ──────────────────────── */}
       {showEdit && editForm && (
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setShowEdit(false)}>
           <div className="modal max-w-sm">
@@ -292,7 +281,6 @@ export default function Users() {
         </div>
       )}
 
-      {/* ─── RESET PASSWORD MODAL ───────────────────── */}
       {showReset && (
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setShowReset(false)}>
           <div className="modal max-w-sm">
@@ -327,7 +315,6 @@ export default function Users() {
         </div>
       )}
 
-      {/* ─── TABLE / LOADING ────────────────────────── */}
       {loading ? (
         <div className="flex justify-center py-20">
           <Loader2 className="animate-spin" style={{ color: '#6366f1' }} size={24} />
@@ -346,7 +333,6 @@ export default function Users() {
       ) : (
         <div className="rounded-xl overflow-hidden" style={{ background: '#fff', border: '1px solid #e8eaf2', boxShadow: '0 1px 4px rgba(15,21,53,0.06)' }}>
           
-          {/* Desktop table */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -407,7 +393,6 @@ export default function Users() {
             </table>
           </div>
 
-          {/* Mobile card list */}
           <div className="block md:hidden divide-y" style={{ borderColor: '#f0f1f8' }}>
             {users.map(u => {
               const cfg = ROLE_CONFIG[u.role as keyof typeof ROLE_CONFIG] || ROLE_CONFIG.STAFF

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Store, FileText, Bell, CalendarDays, Users, LogOut, Receipt, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Store, FileText, Users, LogOut, Receipt, Menu, X } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import clsx from 'clsx'
 
@@ -8,8 +8,6 @@ const NAV = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/shops', label: 'Shops', icon: Store },
   { to: '/bills', label: 'Bills', icon: FileText },
-  { to: '/reminders', label: 'Reminders', icon: Bell },
-  { to: '/weekly', label: 'Weekly', icon: CalendarDays },
   { to: '/users', label: 'Users', icon: Users, adminOnly: true },
 ]
 
@@ -26,7 +24,6 @@ function NavItems({ onClose }: { onClose?: () => void }) {
 
   return (
     <>
-      {/* Logo */}
       <div className="px-4 py-5 flex items-center justify-between" style={{ borderBottom: BORDER }}>
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl flex items-center justify-center"
@@ -38,7 +35,6 @@ function NavItems({ onClose }: { onClose?: () => void }) {
             <p className="text-[10px] font-medium" style={{ color: '#6366f1' }}>Pro</p>
           </div>
         </div>
-        {/* Close button — only on mobile */}
         {onClose && (
           <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors md:hidden">
             <X size={18} />
@@ -46,7 +42,6 @@ function NavItems({ onClose }: { onClose?: () => void }) {
         )}
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 py-4 space-y-0.5 px-2">
         {NAV.filter(n => !n.adminOnly || isAdmin).map(({ to, label, icon: Icon }) => (
           <NavLink
@@ -77,7 +72,6 @@ function NavItems({ onClose }: { onClose?: () => void }) {
         ))}
       </nav>
 
-      {/* User footer */}
       <div className="px-3 py-4" style={{ borderTop: BORDER }}>
         <div className="flex items-center gap-2.5 mb-3 px-1">
           <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
@@ -105,10 +99,8 @@ export default function Sidebar() {
   const [open, setOpen] = useState(false)
   const location = useLocation()
 
-  // Close drawer on route change
   useEffect(() => { setOpen(false) }, [location.pathname])
 
-  // Lock body scroll when drawer open
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
@@ -116,7 +108,6 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* ── Desktop sidebar (md+) ── */}
       <aside
         className="hidden md:flex w-52 flex-shrink-0 flex-col"
         style={{ background: SIDEBAR_BG }}
@@ -124,7 +115,6 @@ export default function Sidebar() {
         <NavItems />
       </aside>
 
-      {/* ── Mobile: Hamburger button ── */}
       <button
         className="md:hidden fixed top-3.5 left-3.5 z-50 w-9 h-9 flex items-center justify-center rounded-xl text-gray-300 hover:text-white transition-colors"
         style={{ background: SIDEBAR_BG, border: BORDER }}
@@ -134,7 +124,6 @@ export default function Sidebar() {
         <Menu size={18} />
       </button>
 
-      {/* ── Mobile: Backdrop ── */}
       {open && (
         <div
           className="md:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
@@ -142,7 +131,6 @@ export default function Sidebar() {
         />
       )}
 
-      {/* ── Mobile: Drawer ── */}
       <aside
         className="md:hidden fixed top-0 left-0 z-50 h-full w-64 flex flex-col transition-transform duration-300"
         style={{

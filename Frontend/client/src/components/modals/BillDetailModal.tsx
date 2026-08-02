@@ -38,7 +38,6 @@ export default function BillDetailModal({ bill, onClose }: Props) {
           maxHeight: '90vh'
         }}>
 
-        {/* Header */}
         <div className="flex items-center justify-between px-5 py-4"
           style={{ borderBottom: '1px solid #f0f1f8' }}>
           <div className="flex items-center gap-2">
@@ -57,10 +56,8 @@ export default function BillDetailModal({ bill, onClose }: Props) {
           </button>
         </div>
 
-        {/* Scrollable body */}
         <div className="overflow-y-auto flex-1 p-5 space-y-5">
 
-          {/* Shop Info */}
           <section>
             <div className="flex items-center gap-1.5 mb-3">
               <Building2 size={13} style={{ color: '#6366f1' }} />
@@ -79,7 +76,6 @@ export default function BillDetailModal({ bill, onClose }: Props) {
             </div>
           </section>
 
-          {/* Bill Info */}
           <section>
             <div className="flex items-center gap-1.5 mb-3">
               <Hash size={13} style={{ color: '#6366f1' }} />
@@ -110,7 +106,6 @@ export default function BillDetailModal({ bill, onClose }: Props) {
             </div>
           </section>
 
-          {/* Payment Summary */}
           <section>
             <div className="flex items-center gap-1.5 mb-3">
               <CreditCard size={13} style={{ color: '#6366f1' }} />
@@ -131,7 +126,6 @@ export default function BillDetailModal({ bill, onClose }: Props) {
             </div>
           </section>
 
-          {/* Payment History */}
           {(bill.payments?.length || 0) > 0 && (
             <section>
               <div className="flex items-center gap-1.5 mb-3">
@@ -169,7 +163,6 @@ export default function BillDetailModal({ bill, onClose }: Props) {
           )}
         </div>
 
-        {/* Footer */}
         <div className="px-5 py-3 flex justify-end"
           style={{ borderTop: '1px solid #f0f1f8' }}>
           <button className="btn btn-sm" onClick={onClose}>Close</button>

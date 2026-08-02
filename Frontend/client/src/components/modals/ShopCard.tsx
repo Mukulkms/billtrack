@@ -1,4 +1,3 @@
-// src/components/shops/ShopCard.tsx
 import { Link } from 'react-router-dom'
 import { Phone, MapPin, Trash2, Pencil } from 'lucide-react'
 import { fmtAmount, getShopColor, initials } from '../../utils/helpers'
@@ -27,7 +26,6 @@ export default function ShopCard({ shop, onDelete }: Props) {
       <div style={{ height: 3, background: color, opacity: 0.75 }} />
 
       <div className="p-4">
-        {/* Identity + actions */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3 min-w-0">
             <div
@@ -64,7 +62,6 @@ export default function ShopCard({ shop, onDelete }: Props) {
           </div>
         </div>
 
-        {/* Contact info */}
         <div className="space-y-1 mb-3">
           {shop.phone && (
             <p className="text-xs flex items-center gap-1.5" style={{ color: '#6b7280' }}>
@@ -88,7 +85,6 @@ export default function ShopCard({ shop, onDelete }: Props) {
           )}
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-3 gap-2 text-center rounded-xl p-3 mb-3" style={{ background: '#f7f8fc' }}>
           <div>
             <p className="text-sm font-bold" style={{ color: '#1f2937' }}>{shop.bills?.length || 0}</p>
@@ -108,7 +104,6 @@ export default function ShopCard({ shop, onDelete }: Props) {
           </div>
         </div>
 
-        {/* Status badge */}
         {shop._hasOverdue && (
           <div className="mb-3 px-2 py-1 rounded-lg text-xs font-semibold text-center"
             style={{ background: '#fff1f2', color: '#dc2626', border: '1px solid #fca5a5' }}>
@@ -122,7 +117,6 @@ export default function ShopCard({ shop, onDelete }: Props) {
           </div>
         )}
 
-        {/* Actions */}
         <div className="flex gap-2">
           <Link to={`/bills?shopId=${shop.id}`} className="btn btn-sm flex-1 justify-center" style={{ fontSize: 12 }}>
             View bills →

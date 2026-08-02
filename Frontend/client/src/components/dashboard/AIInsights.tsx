@@ -90,7 +90,6 @@ export default function AIInsights() {
         <p className="text-sm" style={{ color: '#9ca3af' }}>Abhi insights load nahi ho paye. Refresh try karo.</p>
       ) : (
         <>
-          {/* Bot bubble */}
           <div
             className="rounded-xl px-4 py-3 mb-4 text-sm"
             style={{ background: '#f5f4ff', border: '1px solid #e0defc', color: '#374151', lineHeight: 1.5 }}
@@ -99,7 +98,6 @@ export default function AIInsights() {
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
-            {/* Overdue */}
             <div>
               <div className="flex items-center gap-1.5 mb-2">
                 <AlertTriangle size={13} style={{ color: '#dc2626' }} />
@@ -125,8 +123,6 @@ export default function AIInsights() {
                 )}
               </div>
             </div>
-
-            {/* Upcoming */}
             <div>
               <div className="flex items-center gap-1.5 mb-2">
                 <Clock size={13} style={{ color: '#d97706' }} />

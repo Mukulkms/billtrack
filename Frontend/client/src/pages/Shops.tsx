@@ -1,4 +1,3 @@
-// src/pages/Shops.tsx
 import { useEffect, useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Search, Loader2, Store, X } from 'lucide-react'
@@ -74,7 +73,6 @@ export default function Shops() {
   return (
     <div className="p-4 md:p-6 space-y-5">
 
-      {/* Header */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-lg font-bold" style={{ color: '#0f1535' }}>Shops</h1>
@@ -87,7 +85,6 @@ export default function Shops() {
         </Link>
       </div>
 
-      {/* Summary pills */}
       {!loading && shopsWithStats.length > 0 && (
         <div className="flex gap-2 flex-wrap">
           {[
@@ -104,7 +101,6 @@ export default function Shops() {
         </div>
       )}
 
-      {/* Search + Filters */}
       <div className="flex gap-2 flex-wrap items-center">
         <select className="input" style={{ width: 130, fontSize: 12 }} value={searchBy} onChange={e => setSearchBy(e.target.value)}>
           {SEARCH_BY_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -149,7 +145,6 @@ export default function Shops() {
         </p>
       )}
 
-      {/* Content */}
       {loading ? (
         <div className="flex justify-center py-20">
           <Loader2 className="animate-spin" style={{ color: '#6366f1' }} size={24} />

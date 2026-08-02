@@ -63,7 +63,6 @@ export default function ShopForm() {
   return (
     <div className="p-4 md:p-6 max-w-2xl">
 
-      {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <button
           className="btn btn-sm"
@@ -87,7 +86,6 @@ export default function ShopForm() {
 
       <form onSubmit={submit}>
 
-        {/* Section: Basic info */}
         <div
           className="rounded-xl p-5 mb-4 space-y-4"
           style={{ background: '#fff', border: '1px solid #e8eaf2', boxShadow: '0 1px 4px rgba(15,21,53,0.06)' }}
@@ -105,7 +103,6 @@ export default function ShopForm() {
           </div>
         </div>
 
-        {/* Section: Address */}
         <div
           className="rounded-xl p-5 mb-4 space-y-4"
           style={{ background: '#fff', border: '1px solid #e8eaf2', boxShadow: '0 1px 4px rgba(15,21,53,0.06)' }}
@@ -121,7 +118,6 @@ export default function ShopForm() {
           </div>
         </div>
 
-        {/* Section: Payment */}
         <div
           className="rounded-xl p-5 mb-6 space-y-4"
           style={{ background: '#fff', border: '1px solid #e8eaf2', boxShadow: '0 1px 4px rgba(15,21,53,0.06)' }}
@@ -145,7 +141,6 @@ export default function ShopForm() {
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex justify-end gap-2">
           <button
             type="button"

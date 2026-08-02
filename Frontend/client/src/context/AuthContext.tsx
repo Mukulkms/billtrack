@@ -35,7 +35,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  // 🔥 FIXED: Pehle backend ko batao, phir local clear
   const logout = async () => {
     try {
       await api.post('/auth/logout')  // 👈 Backend session hatao

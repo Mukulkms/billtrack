@@ -1,4 +1,3 @@
-// src/components/shops/shopsUtils.ts
 import { Shop } from '../types'
 
 export type ShopWithStats = Shop & {
