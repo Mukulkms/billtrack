@@ -44,23 +44,23 @@ export default function Bills() {
         {viewBill && <BillDetailModal bill={viewBill} onClose={() => setViewBill(null)} />}
       </Suspense>
 
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-3 min-w-0">
           <div
-            className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
+            className="w-10 h-10 md:w-11 md:h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
             style={{ background: 'var(--color-primary-soft)', border: '1px solid var(--color-primary-border)' }}
           >
-            <Receipt size={20} style={{ color: 'var(--color-primary)' }} />
+            <Receipt size={18} style={{ color: 'var(--color-primary)' }} />
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight">Bills</h1>
-            <p className="text-xs mt-0.5 text-slate-500">
+          <div className="min-w-0">
+            <h1 className="text-lg md:text-xl font-bold text-slate-900 tracking-tight">Bills</h1>
+            <p className="text-xs mt-0.5 text-slate-500 truncate">
               {totalCount} bill{totalCount !== 1 ? 's' : ''} found
               {totalPages > 1 && ` · Page ${page} of ${totalPages}`}
             </p>
           </div>
         </div>
-        <button className="btn btn-primary flex-shrink-0" onClick={() => setShowAdd(true)}>
+        <button className="btn btn-primary flex-shrink-0 w-full sm:w-auto justify-center" onClick={() => setShowAdd(true)}>
           <Plus size={16} /> Add bill
         </button>
       </div>

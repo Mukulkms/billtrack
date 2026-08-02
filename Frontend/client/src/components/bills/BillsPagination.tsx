@@ -19,28 +19,28 @@ export default function BillsPagination({ page, totalPages, totalCount, pageSize
   if (totalPages <= 1) return null
 
   return (
-    <div className="filter-bar flex items-center justify-between flex-wrap gap-3">
-      <p className="text-xs text-slate-500">
+    <div className="filter-bar flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p className="text-xs text-slate-500 order-2 sm:order-1">
         Showing <span className="font-medium text-slate-700">{(page - 1) * pageSize + 1}–{Math.min(page * pageSize, totalCount)}</span> of {totalCount}
       </p>
 
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 order-1 sm:order-2 overflow-x-auto max-w-full" style={{ scrollbarWidth: 'none' }}>
         <button
           onClick={() => onGoToPage(page - 1)}
           disabled={page === 1}
-          className="btn btn-sm w-8 h-8 p-0 justify-center disabled:opacity-40 disabled:cursor-not-allowed"
+          className="btn btn-sm w-8 h-8 p-0 justify-center flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <ChevronLeft size={16} />
         </button>
 
         {getPageNumbers(page, totalPages).map((p, i) =>
           p === '...' ? (
-            <span key={i} className="w-8 h-8 flex items-center justify-center text-xs text-slate-400">...</span>
+            <span key={i} className="w-8 h-8 flex items-center justify-center text-xs text-slate-400 flex-shrink-0">...</span>
           ) : (
             <button
               key={i}
               onClick={() => onGoToPage(p as number)}
-              className={`btn btn-sm w-8 h-8 p-0 justify-center ${page === p ? 'btn-primary' : ''}`}
+              className={`btn btn-sm w-8 h-8 p-0 justify-center flex-shrink-0 ${page === p ? 'btn-primary' : ''}`}
             >
               {p}
             </button>
@@ -50,7 +50,7 @@ export default function BillsPagination({ page, totalPages, totalCount, pageSize
         <button
           onClick={() => onGoToPage(page + 1)}
           disabled={page === totalPages}
-          className="btn btn-sm w-8 h-8 p-0 justify-center disabled:opacity-40 disabled:cursor-not-allowed"
+          className="btn btn-sm w-8 h-8 p-0 justify-center flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <ChevronRight size={16} />
         </button>

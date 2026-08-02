@@ -1,6 +1,7 @@
 import { FileText } from 'lucide-react'
 import { Bill } from '../../types'
 import BillRow from './BillRow'
+import BillCard from './Billcard'
 
 interface Props {
   bills: Bill[]
@@ -32,21 +33,106 @@ function SkeletonRows() {
   )
 }
 
-export default function BillsTable({ bills, loading, expandedPayments, onTogglePayments, onPay, onDelete, onView, onEdit, onAddBill }: Props) {
+function SkeletonCards() {
   return (
-    <div className="card overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full" style={{ minWidth: 760 }}>
-          <thead>
-            <tr style={{ borderBottom: '1px solid var(--color-border-soft)' }}>
-              {HEADERS.map(h => <th key={h} className="th">{h}</th>)}
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <SkeletonRows />
-            ) : (
-              bills.map(b => (
+    <div className="space-y-3 md:hidden">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div key={i} className="rounded-2xl p-4" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="skeleton w-9 h-9 rounded-full flex-shrink-0" />
+            <div className="flex-1 space-y-1.5">
+              <div className="skeleton h-3.5" style={{ width: '55%' }} />
+              <div className="skeleton h-3" style={{ width: '35%' }} />
+            </div>
+          </div>
+          <div className="skeleton h-14 rounded-xl mb-3" />
+          <div className="skeleton h-8 rounded-lg" />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function EmptyState({ onAddBill }: { onAddBill?: () => void }) {
+  return (
+    <div className="py-16 md:py-20 text-center">
+      <div
+        className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
+        style={{ background: 'var(--color-primary-soft)', border: '1px solid var(--color-primary-border)' }}
+      >
+        <FileText size={24} style={{ color: 'var(--color-primary)' }} />
+      </div>
+      <p className="text-sm font-semibold text-slate-700">No bills found</p>
+      <p className="text-xs mt-1 text-slate-400 px-6">Try changing your filters, or add a new bill to get started</p>
+      {onAddBill && (
+        <button className="btn btn-primary btn-sm mt-4" onClick={onAddBill}>
+          Add bill
+        </button>
+      )}
+    </div>
+  )
+}
+
+export default function BillsTable({ bills, loading, expandedPayments, onTogglePayments, onPay, onDelete, onView, onEdit, onAddBill }: Props) {
+  if (loading) {
+    return (
+      <>
+        <SkeletonCards />
+        <div className="card overflow-hidden hidden md:block">
+          <div className="overflow-x-auto">
+            <table className="w-full" style={{ minWidth: 760 }}>
+              <thead>
+                <tr style={{ borderBottom: '1px solid var(--color-border-soft)' }}>
+                  {HEADERS.map(h => <th key={h} className="th">{h}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                <SkeletonRows />
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  if (bills.length === 0) {
+    return (
+      <div className="card overflow-hidden">
+        <EmptyState onAddBill={onAddBill} />
+      </div>
+    )
+  }
+
+  return (
+    <>
+      {/* Mobile: stacked cards, no horizontal scroll */}
+      <div className="space-y-3 md:hidden">
+        {bills.map(b => (
+          <BillCard
+            key={b.id}
+            bill={b}
+            expanded={!!expandedPayments[b.id]}
+            onTogglePayments={onTogglePayments}
+            onPay={onPay}
+            onDelete={onDelete}
+            onView={onView}
+            onEdit={onEdit}
+          />
+        ))}
+      </div>
+
+      {/* Desktop: full data table */}
+      <div className="card overflow-hidden hidden md:block">
+        <div className="overflow-x-auto">
+          <table className="w-full" style={{ minWidth: 760 }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid var(--color-border-soft)' }}>
+                {HEADERS.map(h => <th key={h} className="th">{h}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {bills.map(b => (
                 <BillRow
                   key={b.id}
                   bill={b}
@@ -57,29 +143,11 @@ export default function BillsTable({ bills, loading, expandedPayments, onToggleP
                   onView={onView}
                   onEdit={onEdit}
                 />
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {!loading && bills.length === 0 && (
-        <div className="py-20 text-center">
-          <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-            style={{ background: 'var(--color-primary-soft)', border: '1px solid var(--color-primary-border)' }}
-          >
-            <FileText size={24} style={{ color: 'var(--color-primary)' }} />
-          </div>
-          <p className="text-sm font-semibold text-slate-700">No bills found</p>
-          <p className="text-xs mt-1 text-slate-400">Try changing your filters, or add a new bill to get started</p>
-          {onAddBill && (
-            <button className="btn btn-primary btn-sm mt-4" onClick={onAddBill}>
-              Add bill
-            </button>
-          )}
+              ))}
+            </tbody>
+          </table>
         </div>
-      )}
-    </div>
+      </div>
+    </>
   )
 }
