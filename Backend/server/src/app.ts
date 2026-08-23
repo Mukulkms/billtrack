@@ -23,7 +23,7 @@ const app = express();
 // 🔥 CORS FIX — Multiple origins allow
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://billtrack-azure.vercel.app",  // 👈 Tera actual Vercel URL
+  "https://billtrack-azure.vercel.app",  
 ];
 
 // Agar env mein aur URLs hain toh split karke add kar
@@ -63,7 +63,7 @@ app.use("/api/insights", insightRoutes);
 app.use("/api/payment-history", paymentHistoryRoutes);
 
 app.get("/", (_req, res) => res.json({ success: true, message: "BillTracker API 🚀" }));
-
+app.set("trust proxy", 1);
 app.use(notFound);
 app.use(errorHandler);
 
