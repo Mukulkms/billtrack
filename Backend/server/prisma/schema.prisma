@@ -95,6 +95,17 @@ model Payment {
   receivedBy    User        @relation(fields: [receivedById], references: [id])
 }
 
+model PaymentHistory {
+  id         String   @id @default(cuid())
+  shopName   String
+  ownerName  String?
+  billNumber String
+  amount     Decimal  @db.Decimal(12, 2)
+  billDate   DateTime
+  paidAt     DateTime @default(now())
+  @@index([paidAt])
+}
+
 model ActivityLog {
   id        String   @id @default(cuid())
   userId    String

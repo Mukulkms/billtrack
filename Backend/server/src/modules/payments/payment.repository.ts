@@ -4,7 +4,6 @@ import { PaymentMode } from "@prisma/client";
 
 export const createPaymentRepo = async (data: CreatePaymentDto, receivedById: string) => {
   return prisma.$transaction(async (tx) => {
-    // Create payment
     const payment = await tx.payment.create({
       data: {
         billId: data.billId,
@@ -17,8 +16,7 @@ export const createPaymentRepo = async (data: CreatePaymentDto, receivedById: st
       },
     });
 
-    // Get bill to recalculate
-    const bill = await tx.bill.findUnique({ where: { id: data.billId } });
+    const bill = await tx.bill.findUnique({ where: { id: data.billId }, include: { shop: true } });
     if (!bill) throw new Error("Bill not found");
 
     const newPaidAmount = Number(bill.paidAmount) + data.amount;
@@ -40,6 +38,19 @@ export const createPaymentRepo = async (data: CreatePaymentDto, receivedById: st
         status: newStatus,
       },
     });
+
+    if (newStatus === "PAID") {
+      await tx.paymentHistory.create({
+        data: {
+          shopName: bill.shop.shopName,
+          ownerName: bill.shop.ownerName,
+          billNumber: bill.billNumber,
+          amount: bill.amount,
+          billDate: bill.billDate,
+          paidAt: new Date(),
+        },
+      });
+    }
 
     return payment;
   });

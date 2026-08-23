@@ -16,6 +16,7 @@ import categoryRoutes from "./modules/categories/category.routes";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes";
 import userRoutes from "./modules/users/user.routes";
 import insightRoutes from "./modules/insights/insight.routes";
+import paymentHistoryRoutes from "./modules/payment-history/payment-history.routes";
 
 const app = express();
 
@@ -59,6 +60,7 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/insights", insightRoutes);
+app.use("/api/payment-history", paymentHistoryRoutes);
 
 app.get("/", (_req, res) => res.json({ success: true, message: "BillTracker API 🚀" }));
 

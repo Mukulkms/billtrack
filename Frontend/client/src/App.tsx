@@ -14,6 +14,7 @@ const ShopForm = lazy(() => import('./pages/ShopForm'))
 const Bills = lazy(() => import('./pages/Bills'))
 const Reminders = lazy(() => import('./pages/Reminders'))
 const Weekly = lazy(() => import('./pages/Weekly'))
+const PaymentHistory = lazy(() => import('./pages/PaymentHistory'))
 const Users = lazy(() => import('./pages/Users'))
 
 function PageFallback() {
@@ -43,6 +44,7 @@ function AppRoutes() {
           <Route path="bills" element={<Bills />} />
           <Route path="reminders" element={<Reminders />} />
           <Route path="weekly" element={<Weekly />} />
+          <Route path="payment-history" element={<PaymentHistory />} />
           <Route path="users" element={<Users />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
