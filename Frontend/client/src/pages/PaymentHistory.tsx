@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react'
-import { Loader2, History } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { Loader2, History, Search } from 'lucide-react'
 import { getPaymentHistoryApi, PaymentHistoryEntry } from '../api/paymentHistory'
 import { fmtAmount, fmtDate } from '../utils/helpers'
 
 export default function PaymentHistory() {
   const [entries, setEntries] = useState<PaymentHistoryEntry[]>([])
   const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     getPaymentHistoryApi()
@@ -13,13 +14,36 @@ export default function PaymentHistory() {
       .finally(() => setLoading(false))
   }, [])
 
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    if (!q) return entries
+    return entries.filter(e =>
+      e.shopName.toLowerCase().includes(q) ||
+      (e.ownerName || '').toLowerCase().includes(q) ||
+      e.billNumber.toLowerCase().includes(q)
+    )
+  }, [entries, search])
+
   return (
     <div className="p-4 md:p-6 space-y-4">
-      <div>
-        <h1 className="text-lg font-bold text-slate-900">Payment History</h1>
-        <p className="text-xs mt-0.5 text-slate-500">
-          Fully paid bills, last 30 days · bill delete hone ke baad bhi yahan rehta hai
-        </p>
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="text-lg font-bold text-slate-900">Payment History</h1>
+          <p className="text-xs mt-0.5 text-slate-500">
+            Fully paid bills, last 30 days · bill delete hone ke baad bhi yahan rehta hai
+          </p>
+        </div>
+
+        <div className="relative">
+          <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          <input
+            className="input pl-8"
+            style={{ width: 220, fontSize: 13 }}
+            placeholder="Search by shop, owner, bill #..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
       </div>
 
       {loading ? (
@@ -38,7 +62,7 @@ export default function PaymentHistory() {
                 </tr>
               </thead>
               <tbody>
-                {entries.map(e => (
+                {filtered.map(e => (
                   <tr key={e.id} className="table-row-hover" style={{ borderBottom: '1px solid var(--color-border-soft)' }}>
                     <td className="td">
                       <p className="text-xs font-medium text-slate-800">{e.shopName}</p>
@@ -54,13 +78,17 @@ export default function PaymentHistory() {
             </table>
           </div>
 
-          {entries.length === 0 && (
+          {filtered.length === 0 && (
             <div className="py-16 text-center">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 bg-slate-100">
                 <History size={22} className="text-slate-400" />
               </div>
-              <p className="text-sm font-medium text-slate-700">No payment history yet</p>
-              <p className="text-xs mt-1 text-slate-400">Fully paid bills will show up here</p>
+              <p className="text-sm font-medium text-slate-700">
+                {search ? 'No matching results' : 'No payment history yet'}
+              </p>
+              <p className="text-xs mt-1 text-slate-400">
+                {search ? 'Try a different name or bill number' : 'Fully paid bills will show up here'}
+              </p>
             </div>
           )}
         </div>
