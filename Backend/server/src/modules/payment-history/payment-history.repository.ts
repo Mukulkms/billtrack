@@ -12,3 +12,10 @@ export const getPaymentHistoryRepo = async () => {
   await purgeOld();
   return prisma.paymentHistory.findMany({ orderBy: { paidAt: "desc" } });
 };
+
+// Selected entries ko delete karta hai (checkbox / "select all" se). ids khali ho
+// ya na diye gaye ho to kuch nahi hota — safety ke liye.
+export const deletePaymentHistoryRepo = async (ids: string[]) => {
+  if (!ids || ids.length === 0) return { count: 0 };
+  return prisma.paymentHistory.deleteMany({ where: { id: { in: ids } } });
+};
