@@ -95,6 +95,25 @@ model Payment {
   receivedBy    User        @relation(fields: [receivedById], references: [id])
 }
 
+// Permanent, never-purged snapshot of a bill's sale (category + amount + month)
+// taken right before that bill is deleted. Unlike PaymentHistory this never
+// auto-purges and never references live Category/Bill rows (both name and
+// amount are copied in), so a deleted bill's sale keeps counting toward its
+// month + category forever, even if the category itself is later renamed
+// or removed.
+model SalesArchive {
+  id           String   @id @default(cuid())
+  billId       String   // original Bill.id, kept for reference/debugging only
+  categoryId   String?  // original Category.id, kept for reference only (not a FK)
+  categoryName String   // snapshot of the category name at delete time
+  amount       Decimal  @db.Decimal(12, 2)
+  billDate     DateTime
+  archivedAt   DateTime @default(now())
+
+  @@index([billDate])
+  @@index([categoryId])
+}
+
 model PaymentHistory {
   id         String   @id @default(cuid())
   shopName   String

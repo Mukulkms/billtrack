@@ -88,18 +88,36 @@ export const updateBillRepo = (id: string, data: any) => {
 
 // bill.repository.ts
 
-export const deleteBillRepo = (id: string) => {
-  return prisma.$transaction([
+// Bill delete se pehle uski sale (category + amount + billDate) ko
+// SalesArchive mein permanently snapshot karo — yeh table kabhi purge nahi hoti,
+// isliye monthly sales (Dashboard.tsx) delete hone ke baad bhi sahi rahegi.
+// categoryName yahin copy kar li jaati hai taaki category baad mein rename/delete
+// ho jaaye tab bhi archive record kabhi na toote.
+export const deleteBillRepo = async (id: string) => {
+  return prisma.$transaction(async (tx) => {
+    const bill = await tx.bill.findUnique({
+      where: { id },
+      include: { category: true },
+    });
+    if (!bill) throw new Error("Bill not found");
+
+    await tx.salesArchive.create({
+      data: {
+        billId: bill.id,
+        categoryId: bill.categoryId,
+        categoryName: bill.category?.name || "Uncategorized",
+        amount: bill.amount,
+        billDate: bill.billDate,
+      },
+    });
+
     // Pehle linked payments delete karo
-    prisma.payment.deleteMany({
-      where: { billId: id }
-    }),
+    await tx.payment.deleteMany({ where: { billId: id } });
+
     // Phir bill delete karo
-    prisma.bill.delete({
-      where: { id }
-    })
-  ])
-}
+    return tx.bill.delete({ where: { id } });
+  });
+};
 
 export const getOverdueBillsRepo = () => {
   const now = new Date();

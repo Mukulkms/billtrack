@@ -98,9 +98,13 @@ const categoryTotals = categoryGroups
 };
 
 // ✅ Month-wise sales per category.
-// This is always computed live from the Bill table (billDate + amount + categoryId),
-// so it is never a stale "snapshot" — if a bill's amount, category, or date is edited
-// later, the very next call to this endpoint reflects the correction automatically.
+// Two sources are combined for each month, so a sale never disappears:
+//   1) Bill table — live, still-existing bills (billDate + amount + categoryId).
+//      If a bill's amount/category/date is edited, the very next call reflects it.
+//   2) SalesArchive table — permanent snapshots taken the moment a bill is deleted
+//      (see deleteBillRepo). These never purge and never depend on the live
+//      Category table, so a deleted bill's sale still counts toward its month
+//      forever, even years later.
 export const getMonthlySales = async (req: Request, res: Response) => {
   const now = new Date();
   const year = req.query.year ? Number(req.query.year) : now.getFullYear();
@@ -118,7 +122,7 @@ export const getMonthlySales = async (req: Request, res: Response) => {
   const monthStart = new Date(year, month - 1, 1);
   const monthEnd = new Date(year, month, 1); // exclusive (1st of next month)
 
-  const [categoryGroups, uncategorizedGroup, monthBillCount, allCategories] = await Promise.all([
+  const [categoryGroups, uncategorizedGroup, monthBillCount, allCategories, archiveGroups, archiveUncategorizedGroup, archiveCount] = await Promise.all([
     prisma.bill.groupBy({
       by: ["categoryId"],
       where: {
@@ -138,37 +142,95 @@ export const getMonthlySales = async (req: Request, res: Response) => {
     }),
     prisma.bill.count({ where: { billDate: { gte: monthStart, lt: monthEnd } } }),
     prisma.category.findMany({ orderBy: { name: "asc" } }),
+    // Deleted bills, grouped by their original categoryId (categoryName snapshot
+    // is used for display so it's correct even if that category no longer exists).
+    prisma.salesArchive.groupBy({
+      by: ["categoryId"],
+      where: {
+        categoryId: { not: null },
+        billDate: { gte: monthStart, lt: monthEnd },
+      },
+      _sum: { amount: true },
+      _count: { _all: true },
+    }),
+    prisma.salesArchive.aggregate({
+      where: {
+        categoryId: null,
+        billDate: { gte: monthStart, lt: monthEnd },
+      },
+      _sum: { amount: true },
+      _count: { _all: true },
+    }),
+    prisma.salesArchive.count({ where: { billDate: { gte: monthStart, lt: monthEnd } } }),
   ]);
 
   const categoryMap = new Map(allCategories.map((c) => [c.id, c.name]));
-
-  const salesByCategory = categoryGroups
-    .map((g) => ({
-      categoryId: g.categoryId as string,
-      categoryName: categoryMap.get(g.categoryId as string) || "Unknown",
-      totalAmount: Number(g._sum.amount) || 0,
-      billCount: g._count._all,
-    }))
-    .sort((a, b) => b.totalAmount - a.totalAmount);
-
-  // Include every category, even ones with 0 sales this month, so the filter
-  // view always lists all categories the user has defined.
-  const coveredIds = new Set(salesByCategory.map((c) => c.categoryId));
-  for (const cat of allCategories) {
-    if (!coveredIds.has(cat.id)) {
-      salesByCategory.push({ categoryId: cat.id, categoryName: cat.name, totalAmount: 0, billCount: 0 });
+  // Fallback name for a categoryId that no longer exists in Category (deleted
+  // category): use whatever name was snapshotted alongside its archived bills.
+  const archiveNameByCategoryId = new Map<string, string>();
+  for (const g of archiveGroups) {
+    if (g.categoryId && !categoryMap.has(g.categoryId)) {
+      const sample = await prisma.salesArchive.findFirst({
+        where: { categoryId: g.categoryId },
+        orderBy: { archivedAt: "desc" },
+        select: { categoryName: true },
+      });
+      if (sample) archiveNameByCategoryId.set(g.categoryId, sample.categoryName);
     }
   }
-  salesByCategory.sort((a, b) => b.totalAmount - a.totalAmount);
 
-  if ((uncategorizedGroup._count._all || 0) > 0) {
+  const archiveSumByCategoryId = new Map(
+    archiveGroups.map((g) => [g.categoryId as string, { amount: Number(g._sum.amount) || 0, count: g._count._all }])
+  );
+
+  // categoryId -> combined totals (live Bill + archived/deleted Bill)
+  const combined = new Map<string, { categoryName: string; totalAmount: number; billCount: number }>();
+
+  for (const g of categoryGroups) {
+    const id = g.categoryId as string;
+    combined.set(id, {
+      categoryName: categoryMap.get(id) || archiveNameByCategoryId.get(id) || "Unknown",
+      totalAmount: Number(g._sum.amount) || 0,
+      billCount: g._count._all,
+    });
+  }
+  for (const [id, sum] of archiveSumByCategoryId) {
+    const existing = combined.get(id);
+    if (existing) {
+      existing.totalAmount += sum.amount;
+      existing.billCount += sum.count;
+    } else {
+      combined.set(id, {
+        categoryName: categoryMap.get(id) || archiveNameByCategoryId.get(id) || "Unknown",
+        totalAmount: sum.amount,
+        billCount: sum.count,
+      });
+    }
+  }
+
+  // Include every currently-defined category, even ones with 0 sales this
+  // month, so the filter view always lists all categories the user has defined.
+  for (const cat of allCategories) {
+    if (!combined.has(cat.id)) {
+      combined.set(cat.id, { categoryName: cat.name, totalAmount: 0, billCount: 0 });
+    }
+  }
+
+  const salesByCategory = Array.from(combined.entries())
+    .map(([categoryId, v]) => ({ categoryId, ...v }))
+    .sort((a, b) => b.totalAmount - a.totalAmount);
+
+  const uncategorizedTotal = (Number(uncategorizedGroup._sum.amount) || 0) + (Number(archiveUncategorizedGroup._sum.amount) || 0);
+  const uncategorizedCount = (uncategorizedGroup._count._all || 0) + (archiveUncategorizedGroup._count._all || 0);
+  if (uncategorizedCount > 0) {
     salesByCategory.push({
       categoryId: "uncategorized",
       categoryName: "Uncategorized",
-      totalAmount: Number(uncategorizedGroup._sum.amount) || 0,
-      billCount: uncategorizedGroup._count._all,
+      totalAmount: uncategorizedTotal,
+      billCount: uncategorizedCount,
     });
   }
+  salesByCategory.sort((a, b) => b.totalAmount - a.totalAmount);
 
   const grandTotal = salesByCategory.reduce((s, c) => s + c.totalAmount, 0);
 
@@ -178,7 +240,7 @@ export const getMonthlySales = async (req: Request, res: Response) => {
       year,
       month,
       monthLabel: monthStart.toLocaleDateString("en-IN", { month: "long", year: "numeric" }),
-      billCount: monthBillCount,
+      billCount: monthBillCount + archiveCount,
       grandTotal,
       categoryTotals: salesByCategory,
     },

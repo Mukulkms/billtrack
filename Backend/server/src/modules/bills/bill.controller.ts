@@ -69,8 +69,15 @@ export const updateBillController = async (req: Request, res: Response) => {
 };
 
 export const deleteBillController = async (req: Request, res: Response) => {
-  await deleteBillService(req.params.id as string);
-  res.json({ success: true, message: "Bill deleted" });
+  try {
+    await deleteBillService(req.params.id as string);
+    res.json({ success: true, message: "Bill deleted" });
+  } catch (err: any) {
+    if (err?.message === "Bill not found") {
+      return res.status(404).json({ success: false, message: "Bill not found" });
+    }
+    throw err;
+  }
 };
 
 export const getOverdueBillsController = async (req: Request, res: Response) => {
