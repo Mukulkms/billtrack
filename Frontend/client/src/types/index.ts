@@ -19,3 +19,11 @@ export interface DashboardStats {
   recentBills: Bill[];
   categoryTotals: { categoryId: string; categoryName: string; totalAmount: number; pendingAmount: number; billCount: number }[];
 }
+export interface MonthlySales {
+  year: number;
+  month: number;
+  monthLabel: string;
+  billCount: number;
+  grandTotal: number;
+  categoryTotals: { categoryId: string; categoryName: string; totalAmount: number; billCount: number }[];
+}

@@ -96,3 +96,91 @@ const categoryTotals = categoryGroups
     },
   });
 };
+
+// ✅ Month-wise sales per category.
+// This is always computed live from the Bill table (billDate + amount + categoryId),
+// so it is never a stale "snapshot" — if a bill's amount, category, or date is edited
+// later, the very next call to this endpoint reflects the correction automatically.
+export const getMonthlySales = async (req: Request, res: Response) => {
+  const now = new Date();
+  const year = req.query.year ? Number(req.query.year) : now.getFullYear();
+  const month = req.query.month ? Number(req.query.month) : now.getMonth() + 1; // 1-12
+
+  if (
+    !Number.isInteger(year) ||
+    !Number.isInteger(month) ||
+    month < 1 ||
+    month > 12
+  ) {
+    return res.status(400).json({ success: false, message: "Invalid year or month" });
+  }
+
+  const monthStart = new Date(year, month - 1, 1);
+  const monthEnd = new Date(year, month, 1); // exclusive (1st of next month)
+
+  const [categoryGroups, uncategorizedGroup, monthBillCount, allCategories] = await Promise.all([
+    prisma.bill.groupBy({
+      by: ["categoryId"],
+      where: {
+        categoryId: { not: null },
+        billDate: { gte: monthStart, lt: monthEnd },
+      },
+      _sum: { amount: true },
+      _count: { _all: true },
+    }),
+    prisma.bill.aggregate({
+      where: {
+        categoryId: null,
+        billDate: { gte: monthStart, lt: monthEnd },
+      },
+      _sum: { amount: true },
+      _count: { _all: true },
+    }),
+    prisma.bill.count({ where: { billDate: { gte: monthStart, lt: monthEnd } } }),
+    prisma.category.findMany({ orderBy: { name: "asc" } }),
+  ]);
+
+  const categoryMap = new Map(allCategories.map((c) => [c.id, c.name]));
+
+  const salesByCategory = categoryGroups
+    .map((g) => ({
+      categoryId: g.categoryId as string,
+      categoryName: categoryMap.get(g.categoryId as string) || "Unknown",
+      totalAmount: Number(g._sum.amount) || 0,
+      billCount: g._count._all,
+    }))
+    .sort((a, b) => b.totalAmount - a.totalAmount);
+
+  // Include every category, even ones with 0 sales this month, so the filter
+  // view always lists all categories the user has defined.
+  const coveredIds = new Set(salesByCategory.map((c) => c.categoryId));
+  for (const cat of allCategories) {
+    if (!coveredIds.has(cat.id)) {
+      salesByCategory.push({ categoryId: cat.id, categoryName: cat.name, totalAmount: 0, billCount: 0 });
+    }
+  }
+  salesByCategory.sort((a, b) => b.totalAmount - a.totalAmount);
+
+  if ((uncategorizedGroup._count._all || 0) > 0) {
+    salesByCategory.push({
+      categoryId: "uncategorized",
+      categoryName: "Uncategorized",
+      totalAmount: Number(uncategorizedGroup._sum.amount) || 0,
+      billCount: uncategorizedGroup._count._all,
+    });
+  }
+
+  const grandTotal = salesByCategory.reduce((s, c) => s + c.totalAmount, 0);
+
+  res.json({
+    success: true,
+    data: {
+      year,
+      month,
+      monthLabel: monthStart.toLocaleDateString("en-IN", { month: "long", year: "numeric" }),
+      billCount: monthBillCount,
+      grandTotal,
+      categoryTotals: salesByCategory,
+    },
+  });
+};

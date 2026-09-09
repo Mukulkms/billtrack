@@ -9,9 +9,13 @@ import {
   Store,
   Wallet,
   Loader2,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  BarChart3,
 } from "lucide-react";
-import { getDashboardStatsApi } from "../api/dashboard";
-import { DashboardStats } from "../types";
+import { getDashboardStatsApi, getMonthlySalesApi } from "../api/dashboard";
+import { DashboardStats, MonthlySales } from "../types";
 import { fmtAmount, fmtDate, daysLeft } from "../utils/helpers";
 import StatusPill from "../components/ui/StatusPill";
 import ShopAvatar from "../components/ui/ShopAvatar";
@@ -54,12 +58,37 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [showAddBill, setShowAddBill] = useState(false);
 
+  // Month-wise category sales
+  const now0 = new Date();
+  const [salesYear, setSalesYear] = useState(now0.getFullYear());
+  const [salesMonth, setSalesMonth] = useState(now0.getMonth() + 1); // 1-12
+  const [monthlySales, setMonthlySales] = useState<MonthlySales | null>(null);
+  const [monthlyLoading, setMonthlyLoading] = useState(true);
+
   useEffect(() => {
     getDashboardStatsApi()
       .then((data) => setStats(data))
       .catch(() => toast.error("Failed to load dashboard"))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    setMonthlyLoading(true);
+    getMonthlySalesApi(salesYear, salesMonth)
+      .then((data) => setMonthlySales(data))
+      .catch(() => toast.error("Failed to load monthly sales"))
+      .finally(() => setMonthlyLoading(false));
+  }, [salesYear, salesMonth]);
+
+  const goPrevMonth = () => {
+    if (salesMonth === 1) { setSalesMonth(12); setSalesYear((y) => y - 1); }
+    else setSalesMonth((m) => m - 1);
+  };
+  const goNextMonth = () => {
+    if (salesMonth === 12) { setSalesMonth(1); setSalesYear((y) => y + 1); }
+    else setSalesMonth((m) => m + 1);
+  };
+  const isCurrentMonth = salesYear === now0.getFullYear() && salesMonth === now0.getMonth() + 1;
 
   if (loading) {
     return (
@@ -320,6 +349,87 @@ export default function Dashboard() {
             </div>
           </div>
         )}
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <div className="flex items-center gap-2">
+            <BarChart3 size={15} style={{ color: C.indigo }} />
+            <h2 className="text-sm font-semibold" style={{ color: "#0f1535" }}>Monthly sales by category</h2>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <button className="btn btn-sm" onClick={goPrevMonth} aria-label="Previous month">
+              <ChevronLeft size={14} />
+            </button>
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium" style={{ background: "#f5f4fd", color: "#374151" }}>
+              <Calendar size={13} />
+              <input
+                type="month"
+                value={`${salesYear}-${String(salesMonth).padStart(2, "0")}`}
+                onChange={(e) => {
+                  const [y, m] = e.target.value.split("-").map(Number);
+                  if (y && m) { setSalesYear(y); setSalesMonth(m); }
+                }}
+                className="bg-transparent border-none outline-none text-xs font-medium"
+                style={{ color: "#374151" }}
+              />
+            </div>
+            <button className="btn btn-sm" onClick={goNextMonth} disabled={isCurrentMonth} aria-label="Next month">
+              <ChevronRight size={14} />
+            </button>
+          </div>
+        </div>
+
+        <div className="card p-4">
+          {monthlyLoading ? (
+            <div className="space-y-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="skeleton" style={{ width: "100%", height: 36, borderRadius: 10 }} />
+              ))}
+            </div>
+          ) : !monthlySales || monthlySales.categoryTotals.length === 0 ? (
+            <div className="py-8 text-center text-sm" style={{ color: "#9ca3af" }}>
+              No categories defined yet.
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center justify-between mb-3.5 pb-3.5" style={{ borderBottom: "1px solid #f0f1f8" }}>
+                <div>
+                  <p className="text-xs" style={{ color: "#9ca3af" }}>{monthlySales.monthLabel}</p>
+                  <p className="text-lg font-bold" style={{ color: "#0f1535" }}>{fmtAmount(monthlySales.grandTotal)}</p>
+                </div>
+                <p className="text-xs" style={{ color: "#6b7280" }}>{monthlySales.billCount} bill{monthlySales.billCount !== 1 ? "s" : ""} this month</p>
+              </div>
+
+              {monthlySales.grandTotal === 0 ? (
+                <div className="py-6 text-center text-sm" style={{ color: "#9ca3af" }}>
+                  No sales recorded for {monthlySales.monthLabel}.
+                </div>
+              ) : (
+                <div className="space-y-3.5">
+                  {(() => {
+                    const maxMonthly = Math.max(1, ...monthlySales.categoryTotals.map((c) => c.totalAmount));
+                    return monthlySales.categoryTotals.map((c) => (
+                      <div key={c.categoryId}>
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs font-medium truncate" style={{ color: "#374151" }}>{c.categoryName}</p>
+                          <p className="text-xs font-bold flex-shrink-0 ml-2" style={{ color: "#6366f1" }}>{fmtAmount(c.totalAmount)}</p>
+                        </div>
+                        <div className="cat-bar-track">
+                          <div
+                            className="cat-bar-fill"
+                            style={{ width: `${(c.totalAmount / maxMonthly) * 100}%`, background: "linear-gradient(90deg, #6366f1, #8b5cf6)" }}
+                          />
+                        </div>
+                        <p className="text-[11px] mt-1" style={{ color: "#9ca3af" }}>{c.billCount} bill{c.billCount !== 1 ? "s" : ""}</p>
+                      </div>
+                    ));
+                  })()}
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
 
       {stats.weeklyDue.length > 0 && (
