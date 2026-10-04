@@ -178,8 +178,10 @@ const submit = async () => {
       try {
         attachmentKey = await uploadBillImageApi(billFile)
         setUploadedKey(attachmentKey)
-      } catch {
-        const ok = window.confirm('Bill image upload nahi ho paayi. Bina image ke bill save karein?')
+      } catch (e: any) {
+        const reason = e?.response?.data?.message || e?.message || 'unknown error'
+        console.error('Bill image upload failed:', e)
+        const ok = window.confirm(`Bill image upload nahi ho paayi:\n${reason}\n\nBina image ke bill save karein?`)
         if (!ok) { setSaving(false); return }
       }
     }

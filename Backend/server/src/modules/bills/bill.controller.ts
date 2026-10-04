@@ -101,7 +101,7 @@ export const uploadAttachmentController = async (req: Request, res: Response) =>
     res.status(201).json({ success: true, data: { key } });
   } catch (err: any) {
     console.error("B2 upload failed:", err);
-    res.status(502).json({ success: false, message: "Image upload failed. Try again." });
+    res.status(502).json({ success: false, message: `B2 upload failed: ${err?.name || "Error"} - ${err?.message || "unknown"}` });
   }
 };
 
