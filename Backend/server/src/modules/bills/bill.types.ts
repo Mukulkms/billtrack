@@ -20,4 +20,5 @@ export interface UpdateBillDto {
   remarks?: string;
   status?: string;
   categoryId?: string;
+  attachment?: string | null;
 }

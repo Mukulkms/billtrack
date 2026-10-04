@@ -5,4 +5,5 @@ export const createBillValidation = [
   body("amount").isFloat({ min: 1 }).withMessage("Valid amount required"),
   body("billDate").isISO8601().withMessage("Valid bill date required"),
   body("dueDate").isISO8601().withMessage("Valid due date required"),
+  body("attachment").optional({ nullable: true }).isString(),
 ];

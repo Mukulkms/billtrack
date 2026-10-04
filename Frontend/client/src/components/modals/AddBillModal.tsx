@@ -4,7 +4,7 @@ import { Shop, Bill } from '../../types'
 import { getCategoriesApi, createCategoryApi } from '../../api/categories'
 import { Category } from '../../types'
 import { todayISO, addDays } from '../../utils/helpers'
-import { createBillApi, updateBillApi } from '../../api/bills'
+import { createBillApi, updateBillApi, uploadBillImageApi } from '../../api/bills'
 import { getShopsApi, createShopApi } from '../../api/shops'
 import api from '../../api/client'
 import toast from 'react-hot-toast'
@@ -58,8 +58,11 @@ export default function AddBillModal({ shops: shopsProp, onClose, bill }: Props)
   const [scanMsg, setScanMsg] = useState('')
   const [scanErr, setScanErr] = useState('')
   const [saving, setSaving] = useState(false)
+  const [billFile, setBillFile] = useState<File | null>(null)       // original bill image (B2 pe jayegi)
+  const [uploadedKey, setUploadedKey] = useState<string | null>(null) // upload ho chuka toh retry pe dobara upload nahi
   const fileRef = useRef<HTMLInputElement>(null)
   const camRef = useRef<HTMLInputElement>(null)
+  const editFileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     getShopsApi(1, 1000).then(setShops).catch(() => {})
@@ -97,6 +100,7 @@ export default function AddBillModal({ shops: shopsProp, onClose, bill }: Props)
     setScanErr(''); setScanMsg(''); setScanning(true)
     setShowNewShop(false); setNewShopName('')
     setPreview(URL.createObjectURL(file))
+    setBillFile(file); setUploadedKey(null)
 
     try {
       const base64 = await fileToBase64(file)
@@ -168,14 +172,27 @@ const submit = async () => {
 
   setSaving(true)
   try {
-    const payload = {
+    // 1) Original bill image ko Backblaze pe upload karo (agar nayi image select hui hai)
+    let attachmentKey = uploadedKey
+    if (billFile && !attachmentKey) {
+      try {
+        attachmentKey = await uploadBillImageApi(billFile)
+        setUploadedKey(attachmentKey)
+      } catch {
+        const ok = window.confirm('Bill image upload nahi ho paayi. Bina image ke bill save karein?')
+        if (!ok) { setSaving(false); return }
+      }
+    }
+
+    const payload: any = {
       shopId: form.shopId,
       invoiceNumber: form.invoiceNumber || undefined,
       amount: parseFloat(form.amount),
       billDate: form.billDate,
       dueDate: getDue(),
       remarks: form.remarks || undefined,
-      categoryId: form.categoryId || undefined
+      categoryId: form.categoryId || undefined,
+      ...(attachmentKey ? { attachment: attachmentKey } : {})
     }
 
     if (isEdit && bill) {
@@ -271,7 +288,35 @@ const handleCreateCategory = async () => {
                 <p className="text-xs" style={{ color: '#dc2626' }}>{scanErr}</p>
               </div>
             )}
+
+            {billFile && !scanning && (
+              <p className="text-xs" style={{ color: '#6b7280' }}>
+                📎 Original bill image bill ke saath save hogi
+              </p>
+            )}
           </div>
+          )}
+
+          {isEdit && (
+            <div className="rounded-xl p-3 flex items-center gap-3"
+              style={{ background: '#fafbff', border: '1px solid #e8eaf2' }}>
+              {preview && <img src={preview} className="w-10 h-10 object-cover rounded-lg flex-shrink-0" alt="bill" />}
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold" style={{ color: '#374151' }}>Original bill image</p>
+                <p className="text-xs" style={{ color: '#9ca3af' }}>
+                  {billFile ? 'Nayi image save par replace hogi' : bill?.attachment ? 'Image attached' : 'No image attached'}
+                </p>
+              </div>
+              <button className="btn btn-sm" onClick={() => editFileRef.current?.click()}>
+                <Upload size={13} /> {billFile || bill?.attachment ? 'Replace' : 'Attach'}
+              </button>
+              <input ref={editFileRef} type="file" accept="image/*" className="hidden"
+                onChange={e => {
+                  const f = e.target.files?.[0]
+                  if (f) { setBillFile(f); setUploadedKey(null); setPreview(URL.createObjectURL(f)) }
+                  e.target.value = ''
+                }} />
+            </div>
           )}
 
           {!isEdit && (

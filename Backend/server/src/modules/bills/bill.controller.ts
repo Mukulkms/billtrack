@@ -3,6 +3,7 @@ import { validationResult } from "express-validator";
 import { createBillService, getBillsService, getBillByIdService, updateBillService, deleteBillService, getOverdueBillsService, markOverdueService } from "./bill.service";
 import prisma from "../../config/prisma";
 import { BillStatus } from "@prisma/client";
+import { uploadBillImage, getBillImageUrl } from "../../config/b2";
 
 export const createBillController = async (req: Request, res: Response) => {
   const errors = validationResult(req);
@@ -88,4 +89,36 @@ export const getOverdueBillsController = async (req: Request, res: Response) => 
 export const markOverdueController = async (req: Request, res: Response) => {
   const result = await markOverdueService();
   res.json({ success: true, message: `${result.count} bills marked overdue`, data: result });
+};
+
+// POST /api/bills/attachment  (multipart, field name: "file")
+export const uploadAttachmentController = async (req: Request, res: Response) => {
+  const file = (req as any).file as { buffer: Buffer; mimetype: string } | undefined;
+  if (!file) return res.status(400).json({ success: false, message: "No image provided" });
+
+  try {
+    const key = await uploadBillImage(file.buffer, file.mimetype);
+    res.status(201).json({ success: true, data: { key } });
+  } catch (err: any) {
+    console.error("B2 upload failed:", err);
+    res.status(502).json({ success: false, message: "Image upload failed. Try again." });
+  }
+};
+
+// GET /api/bills/:id/attachment  -> temporary signed URL of original bill image
+export const getAttachmentUrlController = async (req: Request, res: Response) => {
+  const bill = await prisma.bill.findUnique({
+    where: { id: req.params.id as string },
+    select: { attachment: true },
+  });
+  if (!bill) return res.status(404).json({ success: false, message: "Bill not found" });
+  if (!bill.attachment) return res.status(404).json({ success: false, message: "No image attached to this bill" });
+
+  try {
+    const url = await getBillImageUrl(bill.attachment);
+    res.json({ success: true, data: { url } });
+  } catch (err: any) {
+    console.error("B2 signed url failed:", err);
+    res.status(502).json({ success: false, message: "Could not load bill image" });
+  }
 };

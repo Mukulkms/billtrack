@@ -1,4 +1,6 @@
-import { X, Building2, FileText, CreditCard, Calendar, Hash } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { X, Building2, FileText, CreditCard, Calendar, Hash, Image as ImageIcon, Loader2, ExternalLink } from 'lucide-react'
+import { getBillImageUrlApi } from '../../api/bills'
 import { Bill } from '../../types'
 import { fmtAmount, fmtDate, daysLeft } from '../../utils/helpers'
 import StatusPill from '../ui/StatusPill'
@@ -20,6 +22,21 @@ function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
 }
 
 export default function BillDetailModal({ bill, onClose }: Props) {
+  const [imgUrl, setImgUrl] = useState<string | null>(null)
+  const [imgLoading, setImgLoading] = useState(!!bill.attachment)
+  const [imgErr, setImgErr] = useState(false)
+
+  useEffect(() => {
+    if (!bill.attachment) return
+    let cancelled = false
+    setImgLoading(true); setImgErr(false)
+    getBillImageUrlApi(bill.id)
+      .then(url => { if (!cancelled) setImgUrl(url) })
+      .catch(() => { if (!cancelled) setImgErr(true) })
+      .finally(() => { if (!cancelled) setImgLoading(false) })
+    return () => { cancelled = true }
+  }, [bill.id, bill.attachment])
+
   const dl = daysLeft(bill.dueDate)
   const displayStatus =
     (bill.status === 'PENDING' || bill.status === 'PARTIAL') && dl < 0
@@ -105,6 +122,31 @@ export default function BillDetailModal({ bill, onClose }: Props) {
               </div>
             </div>
           </section>
+
+          {bill.attachment && (
+            <section>
+              <div className="flex items-center gap-1.5 mb-3">
+                <ImageIcon size={13} style={{ color: '#6366f1' }} />
+                <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#6366f1' }}>Original Bill</span>
+              </div>
+              <div className="rounded-xl overflow-hidden flex items-center justify-center"
+                style={{ border: '1px solid #e8eaf2', background: '#f8f9ff', minHeight: 120 }}>
+                {imgLoading && <Loader2 size={18} className="animate-spin" style={{ color: '#6366f1' }} />}
+                {imgErr && <p className="text-xs py-6" style={{ color: '#dc2626' }}>Bill image load nahi ho payi</p>}
+                {imgUrl && !imgErr && (
+                  <img src={imgUrl} alt="Original bill" onError={() => setImgErr(true)}
+                    onClick={() => window.open(imgUrl, '_blank', 'noopener')}
+                    className="w-full cursor-zoom-in" style={{ maxHeight: 360, objectFit: 'contain' }} />
+                )}
+              </div>
+              {imgUrl && !imgErr && (
+                <a href={imgUrl} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs font-medium mt-2" style={{ color: '#6366f1' }}>
+                  <ExternalLink size={12} /> Open full size
+                </a>
+              )}
+            </section>
+          )}
 
           <section>
             <div className="flex items-center gap-1.5 mb-3">
